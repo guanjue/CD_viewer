@@ -1,2 +1,3 @@
+cluster	low_lim	high_lim
 0.0	0.0	0.6
 1.0	0.6	1.0
