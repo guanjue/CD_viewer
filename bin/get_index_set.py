@@ -27,13 +27,14 @@ def write2d_array(array,output):
 def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_index_output, sorted_index_set_output):
 	### read given cell type order
 	column_oder = read2d_array(given_column_order,str)
-	order = np.array(np.transpose(column_oder[:,0]),dtype=int)
+	order = np.array(np.transpose(column_oder[:,0]), dtype=int)
 	header = np.array([column_oder[:,1]])
 	print('cell type order:')
 	print(header)
 
 	### read given sorting signal level
-	signal_level_range = read2d_array(given_signal_level,float)
+	signal_level_range = read2d_array(given_signal_level, str)
+	signal_level_range = np.array(signal_level_range[1:,:], dtype=float)
 	print('signal level range:')
 	print(signal_level_range)
 
@@ -42,7 +43,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 	prime_mark_id = np.transpose([prime_mark0[1:,0]])
 
 	### sort cell types by given cell type order
-	prime_mark_info_sorted = np.array(prime_mark0[1:,order], dtype = float)
+	prime_mark_info_sorted = np.array(prime_mark0[1:,order], dtype=float)
 
 	### change signal to user defined signal levels
 	for levels in signal_level_range:
@@ -72,7 +73,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 	prime_mark_info_sorted_matrix_reliable = [prime_mark_info_sorted_matrix[0]]
 	for i in range(1, prime_mark_info_sorted_matrix.shape[0]):
 		### get pattern & 2float
-		pattern = np.array(prime_mark_info_sorted_matrix[i,1:], dtype = float)
+		pattern = np.array(prime_mark_info_sorted_matrix[i,1:], dtype=float)
 		### check if called in both replicates in at least one cell type
 		info = np.sum(pattern)
 		if info > 0:
@@ -106,7 +107,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 		for pattern in index_set_array:
 			pattern_num = index_set_dict[pattern]
 			binary_label = pattern.split('_')
-			if np.sum(np.array(binary_label[1:], dtype = float)) > 0: ### reomve the empty index set (all 0)
+			if np.sum(np.array(binary_label[1:], dtype=float)) > 0: ### reomve the empty index set (all 0)
 				result.write(pattern[1:]+'\t')
 				### label times the number of DNA regions
 				for i in range(1, len(binary_label)-1):
