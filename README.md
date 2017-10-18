@@ -59,7 +59,8 @@
 
 
 ###### scripts in "runall.sh"
-#### get index sets (CORE!!!)###### input signal matrix: $input_folder'celltype.signal.txt'
+#### get index sets (CORE!!!)
+###### input signal matrix: $input_folder'celltype.signal.txt'
 ###### user defined cell type order table: $input_folder'celltype.order.txt'
 ###### user defined signal cluster and the corresponding signal range: $input_folder'signal_level_range.txt'
 ###### sorted index matrix output file name : $output_folder'celltype.index.sorted.txt'
