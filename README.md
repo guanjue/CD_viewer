@@ -39,6 +39,7 @@ name	cell1	cell2	cell3
 1	0.0	1.2	0.5
 2	0.1	0.0	0.6
 3	0.5	1.6	1.6
+...
 ```
 
 #### cell type order table: "celltype.order.txt"
@@ -61,6 +62,7 @@ cluster	low_lim	high_lim
 0.0	0.0	0.6
 1.0	0.6	1.0
 2.0	1.0	1.6
+...
 ```
 
 ###### scripts in "runall.sh"
