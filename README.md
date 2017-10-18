@@ -34,32 +34,34 @@ output_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_vis
 ###### The first column is the unique peak id
 ###### The rest columns have the target epigenetic mark signal is the corresponding cell type
 ###### The first line is the header line:
-
-###### name	cell1	cell2	cell3
-###### 1	0.0	1.2	0.5
-###### 2	0.1	0.0	0.6
-###### 3	0.5	1.6	1.6
+```
+name	cell1	cell2	cell3
+1	0.0	1.2	0.5
+2	0.1	0.0	0.6
+3	0.5	1.6	1.6
+```
 
 #### cell type order table: "celltype.order.txt"
 ###### The first column is the column number in the input matrix
 ###### The second the column is the cell type name in the ouput matrix
 ###### The row order is the output cell type order
-
-###### 1	LSK
-###### 2	CMP
-###### 4	MEP
-###### 3	GMP
+```
+1	LSK
+2	CMP
+4	MEP
+3	GMP
 ...
+```
 
 #### signal level table: "signal_level_range.txt"
 #### This method needs to put the epigenetic marker signal into different clusters.
 #### The "signal_level_range.txt" includes the user difined signal cluster and the corresponding signal range:
-
-###### cluster	low_lim	high_lim
-###### 0.0	0.0	0.6
-###### 1.0	0.6	1.0
-###### 2.0	1.0	1.6
-
+```
+cluster	low_lim	high_lim
+0.0	0.0	0.6
+1.0	0.6	1.0
+2.0	1.0	1.6
+```
 
 ###### scripts in "runall.sh"
 #### get index sets (CORE!!!)
