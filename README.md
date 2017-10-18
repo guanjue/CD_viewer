@@ -15,14 +15,17 @@
 ###### in the "runall.sh" file
 
 #### CD-veiwer bin folder
->script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/bin/'
-
+```
+script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/bin/'
+```
 #### input data folder
->input_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data/'
-
+```
+input_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data/'
+```
 #### ouput data folder
->output_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data_output/'
-
+```
+output_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data_output/'
+```
 
 ##################################
 ###### set script folder; input folder; output folder
