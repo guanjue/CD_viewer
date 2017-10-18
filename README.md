@@ -15,13 +15,13 @@
 ###### in the "runall.sh" file
 
 ### CD-veiwer bin folder
-script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/bin/'
+###### script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/bin/'
 
 ### input data folder
-input_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data/'
+###### input_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data/'
 
 ### ouput data folder
-output_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data_output/'
+###### output_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/cell_develop_visual/test_data_output/'
 
 
 ##################################
@@ -59,7 +59,7 @@ cluster	low_lim	high_lim
 
 
 ###### run CD-viewer
-time bash runall.sh
+###### time bash runall.sh
 
 
 ###### scripts in "runall.sh"
@@ -74,7 +74,7 @@ time bash runall.sh
 
 # index set matrix output file name: $output_folder'celltype.index_set.sorted.txt'
 
-time python $script_folder'get_index_set.py' -i $input_folder'celltype.signal.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $output_folder'celltype.index.sorted.txt' -s $output_folder'celltype.index_set.sorted.txt'
+###### time python $script_folder'get_index_set.py' -i $input_folder'celltype.signal.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $output_folder'celltype.index.sorted.txt' -s $output_folder'celltype.index_set.sorted.txt'
 
 
 ### plot histogram of number of DNA regions in each index set
@@ -82,26 +82,26 @@ time python $script_folder'get_index_set.py' -i $input_folder'celltype.signal.tx
 
 # histogram file name: $output_folder'index_hist.pdf'
 
-time Rscript $script_folder'plot_index_set_region_hist.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'index_hist.pdf' 
+###### time Rscript $script_folder'plot_index_set_region_hist.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'index_hist.pdf' 
 
 
 ### plot index set
-# all sorted index set matrix (ready for plot): $output_folder'celltype.index_set.sorted.txt'
+###### all sorted index set matrix (ready for plot): $output_folder'celltype.index_set.sorted.txt'
 
-# sorted index matrix (ready for plot): $output_folder'celltype.index.sorted.txt'
+###### sorted index matrix (ready for plot): $output_folder'celltype.index.sorted.txt'
 
-# index set matrix that passed the threshold (ready for plot): $output_folder'celltype.index_set_filtered.sorted.txt'
+###### index set matrix that passed the threshold (ready for plot): $output_folder'celltype.index_set_filtered.sorted.txt'
 
-# The heatmap file name of all index sets: $output_folder'index_set_all.pdf'
+###### The heatmap file name of all index sets: $output_folder'index_set_all.pdf'
 
-# The heatmap file name of the index sets that pass the threshold: $output_folder'index_set_thresh.pdf'
+###### The heatmap file name of the index sets that pass the threshold: $output_folder'index_set_thresh.pdf'
 
-# The heatmap file name of all DNA regions in the input matrix: $output_folder'index.png'
+###### The heatmap file name of all DNA regions in the input matrix: $output_folder'index.png'
 
-# The threshold for number of DNA regions in index set: 200 (the plotted index sets require more than >200 DNA regions in each of them)
+###### The threshold for number of DNA regions in index set: 200 (the plotted index sets require more than >200 DNA regions in each of them)
 
-# Output heatmap color: black
+### Output heatmap color: black
 
-time Rscript $script_folder'plot_index_set_module.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'celltype.index.sorted.txt' $output_folder'celltype.index_set_filtered.sorted.txt' $output_folder'index_set_all.pdf' $output_folder'index_set_thresh.pdf' $output_folder'index.png' 200 black
+###### time Rscript $script_folder'plot_index_set_module.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'celltype.index.sorted.txt' $output_folder'celltype.index_set_filtered.sorted.txt' $output_folder'index_set_all.pdf' $output_folder'index_set_thresh.pdf' $output_folder'index.png' 200 black
 
 
