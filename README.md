@@ -48,9 +48,9 @@
 ###### 3	GMP
 ...
 
-### signal level table: "signal_level_range.txt"
-### This method needs to put the epigenetic marker signal into different clusters.
-### The "signal_level_range.txt" includes the user difined signal cluster and the corresponding signal range:
+#### signal level table: "signal_level_range.txt"
+#### This method needs to put the epigenetic marker signal into different clusters.
+#### The "signal_level_range.txt" includes the user difined signal cluster and the corresponding signal range:
 
 ###### cluster	low_lim	high_lim
 ###### 0.0	0.0	0.6
