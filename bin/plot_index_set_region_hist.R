@@ -3,7 +3,6 @@ library(plotrix)
 args = commandArgs(trailingOnly=TRUE)
 index_set_inputfile = args[1]
 index_set_outfile = args[2]
-index_set_outfile_nolim = args[3]
 
 ### read index set matrix
 read_matrix = function(inputfile){
@@ -32,12 +31,6 @@ h$counts=log10(h$counts+1)
 #print((h$counts))
 pdf(index_set_outfile)
 plot(h)
-dev.off()
-
-pdf(index_set_outfile_nolim)
-#plot(h, xaxt="n")
-gap.plot(h$breaks[h$breaks<550 || h$breaks>9800],h$counts[h$breaks<550 || h$breaks>9800],gap=c(550,10100),gap.axis="x",type='h',xtics = c(0, 100, 200, 300, 400, 500,10200,10300),xlab='The number of peaks in the cluster', ylab='The number of clusters')
-abline(v=200,lty=2,col='red')
 dev.off()
 
 # Rscript plot_index_set_region_hist.R celltype.index_set.sorted.txt
