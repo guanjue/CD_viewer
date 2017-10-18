@@ -65,7 +65,7 @@ cluster	low_lim	high_lim
 ...
 ```
 
-###### scripts in "runall.sh"
+## scripts in "runall.sh"
 #### get index sets (CORE!!!)
 ###### input signal matrix: $input_folder'celltype.signal.txt'
 ###### user defined cell type order table: $input_folder'celltype.order.txt'
