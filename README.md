@@ -91,4 +91,4 @@
 
 
 ### run CD-viewer
-###### time bash runall.sh
+>time bash runall.sh
