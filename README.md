@@ -73,9 +73,9 @@
 ###### all sorted index set matrix (ready for plot): $output_folder'celltype.index_set.sorted.txt'
 
 ###### histogram file name: $output_folder'index_hist.pdf'
-
->time Rscript $script_folder'plot_index_set_region_hist.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'index_hist.pdf' 
-
+```
+time Rscript $script_folder'plot_index_set_region_hist.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'index_hist.pdf' 
+```
 
 #### plot index set
 ###### all sorted index set matrix (ready for plot): $output_folder'celltype.index_set.sorted.txt'
@@ -91,4 +91,6 @@
 
 
 ### run CD-viewer
+```
 >time bash runall.sh
+```
