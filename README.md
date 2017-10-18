@@ -66,7 +66,7 @@
 ###### sorted index matrix output file name : $output_folder'celltype.index.sorted.txt'
 ###### index set matrix output file name: $output_folder'celltype.index_set.sorted.txt'
 
-###### time python $script_folder'get_index_set.py' -i $input_folder'celltype.signal.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $output_folder'celltype.index.sorted.txt' -s $output_folder'celltype.index_set.sorted.txt'
+>time python $script_folder'get_index_set.py' -i $input_folder'celltype.signal.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $output_folder'celltype.index.sorted.txt' -s $output_folder'celltype.index_set.sorted.txt'
 
 
 #### plot histogram of number of DNA regions in each index set
@@ -74,7 +74,7 @@
 
 ###### histogram file name: $output_folder'index_hist.pdf'
 
-###### time Rscript $script_folder'plot_index_set_region_hist.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'index_hist.pdf' 
+>time Rscript $script_folder'plot_index_set_region_hist.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'index_hist.pdf' 
 
 
 #### plot index set
@@ -87,7 +87,7 @@
 ###### The threshold for number of DNA regions in index set: 200 (the plotted index sets require more than >200 DNA regions in each of them)
 ###### Output heatmap color: black
 
-###### time Rscript $script_folder'plot_index_set_module.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'celltype.index.sorted.txt' $output_folder'celltype.index_set_filtered.sorted.txt' $output_folder'index_set_all.pdf' $output_folder'index_set_thresh.pdf' $output_folder'index.png' 200 black
+>time Rscript $script_folder'plot_index_set_module.R' $output_folder'celltype.index_set.sorted.txt' $output_folder'celltype.index.sorted.txt' $output_folder'celltype.index_set_filtered.sorted.txt' $output_folder'index_set_all.pdf' $output_folder'index_set_thresh.pdf' $output_folder'index.png' 200 black
 
 
 ### run CD-viewer
