@@ -1,0 +1,70 @@
+index_signal_matrix_dict = {}
+uniq_index = []
+signal_matrix = signal_matrix_od[:,range(4,7)]
+signal_matrix = signal_matrix.astype(float)
+signal_matrix = np.log2(signal_matrix+0.001)
+
+
+for l in range(0,5):
+	print('Round: '+ str(l))
+	if l==0:
+		index_vector_loop = index_vector
+	else:
+		index_vector_loop = index_name_vec
+	index_vector_filter = []
+	print('filter insig_index')
+	for i in range(0, len(index_vector_loop)):
+		index = index_vector_loop[i, 0]
+		signal_vector = signal_matrix[i,:]
+		if not (index in insig_index):
+			if index in index_signal_matrix_dict:
+				index_signal_matrix_dict[ index ].append( signal_vector )
+			else:
+				uniq_index.append( index )
+				index_signal_matrix_dict[ index ] = [ signal_vector ]
+		else:
+			index = 'X_X_X_X_X_X'
+			if index in index_signal_matrix_dict:
+				index_signal_matrix_dict[ index ].append( signal_vector )
+			else:
+				uniq_index.append( index )
+				index_signal_matrix_dict[ index ] = [ signal_vector ]
+		index_vector_filter.append(index)
+	print('get mean vector and cov matrix')
+	index_signal_cov_dict = {}
+	index_signal_mean_dict = {}
+	for index in uniq_index:
+		print(index)
+		### extract index signal matrix
+		one_index_matrix = np.array(index_signal_matrix_dict[ index ], dtype = float)
+		### extract index matrix covariance matrix & mean vector
+		one_index_matrix_cov = np.cov(one_index_matrix, rowvar = False)
+		one_index_matrix_mean = np.mean(one_index_matrix, axis = 0)
+		### append to covariance matrix dict & mean vector dict
+		index_signal_cov_dict[ index ] = one_index_matrix_cov
+		index_signal_mean_dict[ index ] = one_index_matrix_mean
+	print('get scores')
+	score_i_exp_matrix = np.empty((signal_matrix.shape[0], 0), float)
+	for index in uniq_index:
+		print(index)
+		cov_i = index_signal_cov_dict[ index ]
+		cov_i_inverse = np.linalg.inv(cov_i)
+		mean_i = index_signal_mean_dict[ index ]
+		d = np.sum(- 0.5 * np.log( abs(cov_i) ))
+		score_i = d - 0.5 * np.sum( np.dot((signal_matrix-mean_i), cov_i_inverse) * (signal_matrix-mean_i), axis = 1 ) #+ np.log(pi)
+		score_i_exp = np.exp(score_i).reshape((score_i.shape[0],1))
+		print(score_i_exp.shape)
+		score_i_exp_matrix = np.concatenate((score_i_exp_matrix, score_i_exp), axis=1)
+	### get max p and index
+	index_name_vec = []
+	index_p_vec = []
+	for p_vec in score_i_exp_matrix:
+		index_i = uniq_index[np.argmax(p_vec)]
+		index_name_vec.append(index_i)
+		p_max = np.max(p_vec) / np.sum(p_vec)
+		index_p_vec.append(p_max)
+	### print counter
+	#Counter(index_vector_loop)
+	#Counter(index_name_vec)
+	index_name_vec = np.array(index_name_vec).reshape(len(index_name_vec),1)
+

@@ -34,7 +34,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 
 	### read given sorting signal level
 	signal_level_range = read2d_array(given_signal_level, str)
-	signal_level_range = np.array(signal_level_range[1:,:], dtype=float)
+	signal_level_range = np.array(signal_level_range[1:,0:3], dtype=float)
 	print('signal level range:')
 	print(signal_level_range)
 

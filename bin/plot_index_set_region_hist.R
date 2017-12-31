@@ -1,4 +1,3 @@
-library(plotrix)
 ### get parameters
 args = commandArgs(trailingOnly=TRUE)
 index_set_inputfile = args[1]
