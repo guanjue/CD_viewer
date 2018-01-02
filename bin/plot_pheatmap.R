@@ -41,7 +41,10 @@ if (log2=='T'){
 ###### read colnames file
 colname_file = read.table(signal_input_list, header=F)
 ### add colnames
-colnames(signal_matrix) = colname_file[,2]
+if (dim(signal_matrix)[2]==length(colname_file[,2])){
+	colnames(signal_matrix) = colname_file[,2]
+}
+
 format = png
 color_heatmap(signal_matrix, high_color, low_color, format, output_filename)
 
