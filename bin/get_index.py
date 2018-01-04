@@ -3,6 +3,7 @@ import numpy as np
 from subprocess import call
 from scipy import stats
 from collections import Counter
+from sklearn.cluster import AgglomerativeClustering, KMeans
 ################################################################################################
 ### read 2d array
 def read2d_array(filename,dtype_used):
@@ -118,7 +119,7 @@ def get_cRE_ideas_state(data_info_matrix, id_col, lb_col, cover_col, middist_col
 def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_col, method, sort):
 	### sort input bed files
 	sort_bed_file = peak_bed + '.sort.bed'
-	call('sort -k1,1 -k2,2n ' + peak_bed + ' > ' + sort_bed_file, shell=True)
+	call('gsort -k1,1 -V -s -k2,2n ' + peak_bed + ' > ' + sort_bed_file, shell=True)
 	call('cp ' + sort_bed_file + ' ' + output_file, shell=True)
 	### generate index mark matrix
 	mark_list_vec = open(mark_list, 'r')
@@ -132,7 +133,7 @@ def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_co
 		celltype_list.append(tmp[1])
 		### sort bianry label bed files
 		if sort == 'T':
-			call('sort -k1,1 -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
+			call('gsort -k1,1 -V -s -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
 		else:
 			call('cp ' + mark_bed_file + ' ' + mark_bed_file+'.sort.bed', shell=True)
 		### use bedtools to generate the index/signal matrix
@@ -262,6 +263,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 		if l==0:
 			### in the 1st round, we use the orginal index to label the peaks
 			index_vector_loop = index_vector
+			index_name_vec_index_set = index_vector.reshape(index_vector.shape[0],1)
 		else:
 			### after 1st round, we use previous round generated index to label the peaks
 			index_vector_loop = index_name_vec
@@ -323,7 +325,6 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 		print('calculating Quadratic Scores...')
 		if l==0:
 			index_p_vec_index_set = np.empty((0, 1), float)
-			index_name_vec_index_set = np.empty((0, 1), float)
 		score_i_exp_matrix = np.empty((signal_matrix.shape[0], 0), float)
 		for index in uniq_index:
 			### extract index signal matrix of one index set
@@ -340,7 +341,6 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 				#index_p_vec_index_set = np.array(index_p_vec_index_set).reshape(len(index_p_vec_index_set),1)
 				### add od index set index name * nrow
 				index_name_vec_i = np.array([[ index ]]*signal_matrix_i.shape[0])
-				index_name_vec_index_set = np.concatenate((index_name_vec_index_set, index_name_vec_i), axis=0)
 				
 			### calculate log scale score (for entire signal_matrix)
 			d = np.sum(- 0.5 * np.log( abs(cov_i) ))
@@ -360,12 +360,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 			index_p_vec.append(p_max)
 		print('calculating max p and index...DONE') 
 		index_p_vec = np.array(index_p_vec).reshape(len(index_p_vec),1)
-		index_name_vec = np.array(index_name_vec).reshape(len(index_name_vec),1)
-		print(index_p_vec_index_set.shape)
-		print(index_p_vec.shape)
-		print(index_name_vec_index_set.shape)
-		print(index_name_vec.shape)		
-		print('index set total number: ' + str(index_name_vec.shape[0]))
+		index_name_vec = np.array(index_name_vec).reshape(len(index_name_vec),1)	
 	### return all objects
 	return { 'signal_matrix_bed': signal_matrix_bed, 'index_name_vec': index_name_vec, 'index_p_vec': index_p_vec, 'index_name_vec_index_set': index_name_vec_index_set, 'index_p_vec_index_set': index_p_vec_index_set, 'signal_matrix': signal_matrix, 'uniq_index': uniq_index, 'index_set_peak_counts_matrix': index_set_peak_counts_matrix, 'index_set_signal_mean_matrix': index_set_signal_mean_matrix, 'index_vector_filter': index_vector_filter }
 
@@ -441,7 +436,7 @@ def matrix_col_cal(matrix, function, para=None):
 
 ################################################################################################
 ### index set sth some score matrix
-def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col, uniq_index, method, smallnum,  output_filename):
+def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col, uniq_index, method, smallnum, preorder, output_filename):
 	### read sth matrix file
 	sth_matrix = read2d_array(sth_matrix_file, 'str')
 	### rm unused cols
@@ -500,14 +495,109 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 	index_set_list = index_set_list.reshape(index_set_list.shape[0], 1)
 	index_set_sth_matrix = np.concatenate((index_set_list, index_set_sth_matrix), axis = 1)
 	###### write output
-	### indexed sth matrix
-	write2d_array(sth_matrix_indexed, output_filename+'.indexed.txt')
-	call('sort -k1,1 -k2,2rn ' + output_filename+'.indexed.txt' + ' > ' + output_filename+'.indexed.sort.txt', shell=True)
-	call('rm ' + output_filename+'.indexed.txt', shell=True)
-	### index set of sth 
-	write2d_array(index_set_sth_matrix, output_filename+'.index_set.txt')
-	call('sort -k1,1 ' + output_filename+'.index_set.txt' + ' > ' + output_filename+'.index_set.sort.txt', shell=True)
-	call('rm ' + output_filename+'.index_set.txt', shell=True)
+	if preorder =='F':
+		### indexed sth matrix
+		write2d_array(sth_matrix_indexed, output_filename+'.indexed.txt')
+		call('sort -k1,1 -k2,2rn ' + output_filename+'.indexed.txt' + ' > ' + output_filename+'.indexed.sort.txt', shell=True)
+		call('rm ' + output_filename+'.indexed.txt', shell=True)
+		### index set of sth 
+		write2d_array(index_set_sth_matrix, output_filename+'.index_set.txt')
+		call('sort -k1,1 ' + output_filename+'.index_set.txt' + ' > ' + output_filename+'.index_set.sort.txt', shell=True)
+		call('rm ' + output_filename+'.index_set.txt', shell=True)
+	elif preorder =='T':
+		### heirarchical clustering
+		n_cluster = index_set_sth_matrix.shape[0]
+		#model = AgglomerativeClustering(linkage='average',n_clusters=n_cluster, compute_full_tree=True)
+		model = KMeans(n_clusters=5, random_state=0)
+		model.fit(index_set_sth_matrix[:,1:])
+		hclust_label = model.labels_
+		### hclust label sort
+		index_set_hl_dict = {}
+		for index, hl in zip(index_set_sth_matrix, hclust_label):
+			index_set_hl_dict[index[0]] = hl
+		### reorder index matrix and index set matrix
+		print('reorder...')
+		print('for index set matrix...')
+		sth_matrix_index_set_hl_order = []
+		for index_set_sth_matrix_indexed in index_set_sth_matrix:
+			### read index
+			index_set_tmp = index_set_sth_matrix_indexed[0]
+			### index to hcluster labels
+			sth_matrix_index_set_hl_order.append(index_set_hl_dict[index_set_tmp])
+		### list to np.array
+		sth_matrix_index_set_hl_order = np.array(sth_matrix_index_set_hl_order)
+		print('sort by hl col & remove first hl col...')
+		index_set_hl_order = np.argsort(sth_matrix_index_set_hl_order)
+		index_set_sth_matrix_hl_ordered = index_set_sth_matrix[index_set_hl_order,:]
+		### save order vector
+		index_set_hl_sort = index_set_sth_matrix_hl_ordered[:,0].reshape(index_set_sth_matrix_hl_ordered.shape[0],1)
+		### write output
+		write2d_array(index_set_sth_matrix_hl_ordered, output_filename+'.index_set.sort.txt')
+		write2d_array(index_set_hl_sort, output_filename+'.index_set_hl_sorted.txt')
+		#call('sort -k1,1 ' + output_filename+'.index_set.txt ' + ' > ' + output_filename+'.index_set.sort.txt', shell=True)
+		#call('rm ' + output_filename+'.index_set.txt', shell=True)
+
+		print('for index matrix...')
+		sth_matrix_index_hl_order = []
+		for index in sth_matrix_indexed:
+			### read index
+			index_tmp = index[0]
+			### index to hcluster labels
+			sth_matrix_index_hl_order.append(index_set_hl_dict[index_tmp])
+		### list to np.array
+		sth_matrix_index_hl_order = np.array(sth_matrix_index_hl_order)
+		print(sth_matrix_index_hl_order.shape)
+		print('sort by hl col & remove first hl col...')
+		index_hl_order = np.argsort(sth_matrix_index_hl_order)
+		index_sth_matrix_hl_ordered = sth_matrix_indexed[index_hl_order,:]
+		### write output
+		write2d_array(index_sth_matrix_hl_ordered, output_filename+'.indexed.sort.txt')
+		#call('sort -k1,1 -k3,3rn ' + output_filename+'.indexed.txt ' + ' > ' + output_filename+'.indexed.sort.txt', shell=True)
+		#call('rm ' + output_filename+'.indexed.txt', shell=True)
+
+	else:
+		### read index order
+		index_set_hl_ordered = read2d_array(preorder, str)
+		### hclust order to dict
+		index_set_hl_dict = {}
+		for i in range(0, index_set_hl_ordered.shape[0]):
+			index_set_tmp = index_set_hl_ordered[i,0]
+			index_set_hl_dict[index_set_tmp] = i
+
+		### reorder index matrix and index set matrix
+		print('reorder...')
+		print('for index set matrix...')
+		sth_matrix_index_set_hl_order = []
+		for index_set_sth_matrix_indexed in index_set_sth_matrix:
+			### read index
+			index_set_tmp = index_set_sth_matrix_indexed[0]
+			### index to hcluster labels
+			sth_matrix_index_set_hl_order.append(index_set_hl_dict[index_set_tmp])
+		### list to np.array
+		sth_matrix_index_set_hl_order = np.array(sth_matrix_index_set_hl_order)
+		print('sort by hl col & remove first hl col...')
+		index_set_hl_order = np.argsort(sth_matrix_index_set_hl_order)
+		index_set_sth_matrix_hl_ordered = index_set_sth_matrix[index_set_hl_order,:]
+		### save order vector
+		index_set_hl_sort = index_set_sth_matrix_hl_ordered[:,0].reshape(index_set_sth_matrix_hl_ordered.shape[0],1)
+		### write output
+		write2d_array(index_set_sth_matrix_hl_ordered, output_filename+'.index_set.sort.txt')
+
+		print('for index matrix...')
+		sth_matrix_index_hl_order = []
+		for index in sth_matrix_indexed:
+			### read index
+			index_tmp = index[0]
+			### index to hcluster labels
+			sth_matrix_index_hl_order.append(index_set_hl_dict[index_tmp])
+		### list to np.array
+		sth_matrix_index_hl_order = np.array(sth_matrix_index_hl_order)
+		print('sort by hl col & remove first hl col...')
+		index_hl_order = np.argsort(sth_matrix_index_hl_order)
+		index_sth_matrix_hl_ordered = sth_matrix_indexed[index_hl_order,:]
+		### write output
+		write2d_array(index_sth_matrix_hl_ordered, output_filename+'.indexed.sort.txt')		
+
 
 ################################################################################################
 
@@ -523,16 +613,16 @@ sort_sigbed = 'T'
 print('get binary matrix...')
 #get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
-### get TF ChIP-seq matrix
+### get signal matrix
 peak_bed = 'homerTable3.peaks.filtered.interval.bed'
 peak_bed_colnum = 4
-mark_list_chip = 'chip_list.txt'
-output_file_chip = 'homerTable3.peaks.filtered.interval.bed.chip.matrix.txt'
-signal_col = 'N/A'
-method = 'intersect'
-sort_sigbed = 'T'
-print('get chip matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+mark_list_signal = 'signal_list.txt'
+output_file_signal = 'homerTable3.peaks.filtered.interval.bed.signal.matrix.txt'
+signal_col = 5
+method = 'map'
+sort_sigbed = 'F'
+print('get signal matrix...')
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 ### get ideas label matrix
 peak_bed = 'homerTable3.peaks.filtered.interval.bed'
@@ -545,28 +635,29 @@ sort_sigbed = 'F'
 print('get ideas matrix...')
 #get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
 
-### get signal matrix
+### get TF ChIP-seq matrix
 peak_bed = 'homerTable3.peaks.filtered.interval.bed'
 peak_bed_colnum = 4
-mark_list_signal = 'signal_list.txt'
-output_file_signal = 'homerTable3.peaks.filtered.interval.bed.signal.matrix.txt'
-signal_col = 5
-method = 'map'
+mark_list_chip = 'chip_list.txt'
+output_file_chip = 'homerTable3.peaks.filtered.interval.bed.chip.matrix.txt'
+signal_col = 'N/A'
+method = 'intersect'
 sort_sigbed = 'T'
-print('get signal matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+print('get chip matrix...')
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+
 
 ### Multi-variable norm p-value (QDA)
 index_matrix_start_col = 5
 signal_matrix_start_col = 5
 siglevel_counts = 0.95
-small_value = 0.0001
+small_value = 1
 log_signal = 'T'
-qda_round = 1
+qda_round = 10
 bins_folder = '/Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/'
 index_matrix = read2d_array('homerTable3.peaks.filtered.interval.bed.index.matrix.txt', 'str')
 signal_matrix_od = read2d_array('homerTable3.peaks.filtered.interval.bed.signal.matrix.txt', 'str')
-scale = 'T'
+scale = 'F'
 
 ### use while loop to select the threshold of index set counts
 index_matrix = read2d_array('homerTable3.peaks.filtered.interval.bed.index.matrix.txt', 'str')
@@ -589,26 +680,31 @@ index_set_peak_counts_matrix = mvn_density_score_dict['index_set_peak_counts_mat
 index_set_signal_mean_matrix = mvn_density_score_dict['index_set_signal_mean_matrix']
 index_vector_filter = mvn_density_score_dict['index_vector_filter']
 
+print('check!!!check!!!check!!!check!!!check!!!check!!!')
 print(signal_matrix_bed[0:10,:])
+print('check!!!check!!!check!!!check!!!check!!!check!!!')
+print(index_name_vec_index_set[0:10,:])
+print(signal_matrix[0:10,:])
+print('check!!!check!!!check!!!check!!!check!!!check!!!')
+print(index_p_vec_index_set[0:10,:])
+print('check!!!check!!!check!!!check!!!check!!!check!!!')
 
 #######################
 
 print('write signal mean matrix...')
 output_file_signal_index_set = output_file_signal+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_signal, 5, uniq_index, 'mean', 0,  output_file_signal_index_set)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_signal, 5, uniq_index, 'mean', 0,  'F', output_file_signal_index_set)
 
 print('write binary sum matrix...')
 output_file_index_index_set = output_file_index+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index, 5, uniq_index, 'sum', 0,  output_file_index_index_set)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index, 5, uniq_index, 'sum', 0, 'F', output_file_index_index_set)
 
 print('write pval mean matrix...')
 output_file_pval = 'homerTable3.peaks.filtered.interval.bed.pval.matrix.txt'+'.index_set.txt'
 p_matrix_index_set = np.concatenate((index_p_vec_index_set, index_p_vec_index_set), axis = 1)
-print(p_matrix_index_set.shape)
-print(p_matrix_index_set[0:10,:])
 write2d_array( p_matrix_index_set, output_file_pval)
 output_file_pval_index_set = output_file_pval+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_pval, 1, uniq_index, 'mean', 0,  output_file_pval_index_set)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_pval, 1, uniq_index, 'mean', 0, 'F', output_file_pval_index_set)
 
 print('write mvn index matrix...')
 output_file_index_mvn = 'homerTable3.peaks.filtered.interval.bed.mvn_index.matrix.txt'+'.index_set.txt'
@@ -628,22 +724,22 @@ write2d_array(index_mvn, output_file_index_mvn)
 
 print('write mvn binary sum matrix...')
 output_file_index_mvn_index_set = output_file_index_mvn+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index_mvn, 1, uniq_index, 'sum', 0,  output_file_index_mvn_index_set)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index_mvn, 1, uniq_index, 'sum', 0, 'F', output_file_index_mvn_index_set)
 
 print('write chip enrichment matrix...')
 smallnum = 50
 output_file_chip_index_set = output_file_chip+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_chip, 5, uniq_index, 'enrich', smallnum,  output_file_chip_index_set)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_chip, 5, uniq_index, 'enrich', smallnum, 'F', output_file_chip_index_set)
 
 print('write ideas most frequent label matrix...')
 output_file_ideas_index_set_freq = output_file_ideas+'.freq'+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostfreq', 0,  output_file_ideas_index_set_freq)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostfreq', 0, 'F', output_file_ideas_index_set_freq)
 print('write ideas most enriched label matrix...')
 output_file_ideas_index_set_enrich = output_file_ideas+'.enrich'+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostenrich', 0,  output_file_ideas_index_set_enrich)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostenrich', 0, 'F', output_file_ideas_index_set_enrich)
 print('write ideas Shanno Entropy matrix...')
 output_file_ideas_index_set_sh = output_file_ideas+'.sh'+'.index_set.txt'
-index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'sh', 0,  output_file_ideas_index_set_sh)
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'sh', 0, 'F', output_file_ideas_index_set_sh)
 
 
 
@@ -662,25 +758,25 @@ ideas_index_boarder_color = 'NA'
 ideas_index_set_boarder_color = 'gray'
 
 print('use rect to plot ideas heatmap...')
-call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 
 print('use rect to plot ideas heatmap...with Shannon Entropy')
-call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 
 signal_high_color = 'red'
 signal_low_color = 'white'
-signal_log2_transform = 'T'
+signal_log2_transform = 'F'
 signal_log2_transform_add_smallnum = 0.001
 signal_index_matrix_start_col = 3
 signal_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot signal index & index set heatmap...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
 
 chip_high_color = 'blue'
@@ -691,8 +787,8 @@ chip_index_matrix_start_col = 3
 chip_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot signal index & index set heatmap...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.index_set.sort.txt' + ' ' + output_file_chip_index_set+'.index_set.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_set_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.indexed.sort.txt' + ' ' + output_file_chip_index_set+'.indexed.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.index_set.sort.txt' + ' ' + output_file_chip_index_set+'.index_set.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_set_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.indexed.sort.txt' + ' ' + output_file_chip_index_set+'.indexed.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
 
 
 index_high_color = 'black'
@@ -703,20 +799,20 @@ index_index_matrix_start_col = 3
 index_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot signal index & index set heatmap...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + ' ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + ' ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 
 
 pval_high_color = 'orange'
 pval_low_color = 'white'
-pval_log2_transform = 'F'
+pval_log2_transform = 'T'
 pval_log2_transform_add_smallnum = 0.001
 pval_index_matrix_start_col = 3
 pval_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot p-value index & index set heatmap...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 
 
@@ -727,36 +823,36 @@ call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index
 #######################
 #######################
 #######################
-
-print('write chip enrichment matrix...')
-smallnum = 50
-output_file_chip_index_set = output_file_chip
-index_set_score(index_name_vec, index_p_vec, output_file_chip, 5, uniq_index, 'enrich', smallnum,  output_file_chip_index_set)
-
-print('write ideas most frequent label matrix...')
-output_file_ideas_index_set_freq = output_file_ideas+'.freq'
-index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostfreq', 0,  output_file_ideas_index_set_freq)
-print('write ideas most enriched label matrix...')
-output_file_ideas_index_set_enrich = output_file_ideas+'.enrich'
-index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostenrich', 0,  output_file_ideas_index_set_enrich)
-print('write ideas Shanno Entropy matrix...')
-output_file_ideas_index_set_sh = output_file_ideas+'.sh'
-index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'sh', 0,  output_file_ideas_index_set_sh)
 
 print('write signal mean matrix...')
 output_file_signal_index_set = output_file_signal
-index_set_score(index_name_vec, index_p_vec, output_file_signal, 5, uniq_index, 'mean', 0,  output_file_signal_index_set)
+index_set_score(index_name_vec, index_p_vec, output_file_signal, 5, uniq_index, 'mean', 0, 'T', output_file_signal_index_set)
 
 print('write binary sum matrix...')
 output_file_index_index_set = output_file_index
-index_set_score(index_name_vec, index_p_vec, output_file_index, 5, uniq_index, 'sum', 0,  output_file_index_index_set)
+index_set_score(index_name_vec, index_p_vec, output_file_index, 5, uniq_index, 'sum', 0, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_index_index_set)
 
 print('write pval mean matrix...')
 output_file_pval = 'homerTable3.peaks.filtered.interval.bed.pval.matrix.txt'
 p_matrix = np.concatenate((index_p_vec, index_p_vec), axis = 1)
 write2d_array( p_matrix, output_file_pval)
 output_file_pval_index_set = output_file_pval
-index_set_score(index_name_vec, index_p_vec, output_file_pval, 1, uniq_index, 'mean', 0,  output_file_pval_index_set)
+index_set_score(index_name_vec, index_p_vec, output_file_pval, 1, uniq_index, 'mean', 0, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_pval_index_set)
+
+print('write chip enrichment matrix...')
+smallnum = 50
+output_file_chip_index_set = output_file_chip
+index_set_score(index_name_vec, index_p_vec, output_file_chip, 5, uniq_index, 'enrich', smallnum, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_chip_index_set)
+
+print('write ideas most frequent label matrix...')
+output_file_ideas_index_set_freq = output_file_ideas+'.freq'
+index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostfreq', 0, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_ideas_index_set_freq)
+print('write ideas most enriched label matrix...')
+output_file_ideas_index_set_enrich = output_file_ideas+'.enrich'
+index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostenrich', 0, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_ideas_index_set_enrich)
+print('write ideas Shanno Entropy matrix...')
+output_file_ideas_index_set_sh = output_file_ideas+'.sh'
+index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'sh', 0, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_ideas_index_set_sh)
 
 print('write mvn index matrix...')
 output_file_index_mvn = 'homerTable3.peaks.filtered.interval.bed.mvn_index.matrix.txt'
@@ -776,11 +872,37 @@ write2d_array(index_mvn, output_file_index_mvn)
 
 print('write mvn binary sum matrix...')
 output_file_index_mvn_index_set = output_file_index_mvn
-index_set_score(index_name_vec, index_p_vec, output_file_index_mvn, 1, uniq_index, 'sum', 0,  output_file_index_mvn_index_set)
+index_set_score(index_name_vec, index_p_vec, output_file_index_mvn, 1, uniq_index, 'sum', 0, output_file_signal_index_set+'.index_set_hl_sorted.txt', output_file_index_mvn_index_set)
 
 
 
 #######################
+
+
+
+signal_high_color = 'red'
+signal_low_color = 'white'
+signal_log2_transform = 'F'
+signal_log2_transform_add_smallnum = 0.001
+signal_index_matrix_start_col = 3
+signal_index_set_matrix_start_col = 2
+
+print('use pheatmap to plot signal index & index set heatmap...')
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+
+
+index_high_color = 'black'
+index_low_color = 'white'
+index_log2_transform = 'T'
+index_log2_transform_add_smallnum = 0.001
+index_index_matrix_start_col = 3
+index_index_set_matrix_start_col = 2
+
+print('use pheatmap to plot signal index & index set heatmap...')
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + ' ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+
 
 mark_list_ideas = 'ideas_list.txt'
 ideas_range_color_file = 'ideas_range_color.txt'
@@ -804,16 +926,6 @@ print('use rect to plot ideas heatmap...with Shannon Entropy')
 call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 
-signal_high_color = 'red'
-signal_low_color = 'white'
-signal_log2_transform = 'T'
-signal_log2_transform_add_smallnum = 0.001
-signal_index_matrix_start_col = 3
-signal_index_set_matrix_start_col = 2
-
-print('use pheatmap to plot signal index & index set heatmap...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
 
 chip_high_color = 'blue'
@@ -828,21 +940,10 @@ call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.indexed.sort.txt' + ' ' + output_file_chip_index_set+'.indexed.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
 
 
-index_high_color = 'black'
-index_low_color = 'white'
-index_log2_transform = 'T'
-index_log2_transform_add_smallnum = 0.001
-index_index_matrix_start_col = 3
-index_index_set_matrix_start_col = 2
-
-print('use pheatmap to plot signal index & index set heatmap...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + ' ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
-
 
 pval_high_color = 'orange'
 pval_low_color = 'white'
-pval_log2_transform = 'F'
+pval_log2_transform = 'T'
 pval_log2_transform_add_smallnum = 0.001
 pval_index_matrix_start_col = 3
 pval_index_set_matrix_start_col = 2
