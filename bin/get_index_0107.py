@@ -5,7 +5,6 @@ from scipy import stats
 from scipy.stats import t, nbinom, poisson
 from collections import Counter
 from sklearn.cluster import AgglomerativeClustering, KMeans
-import matplotlib.pyplot as plt
 ################################################################################################
 ### read 2d array
 def read2d_array(filename,dtype_used):
@@ -234,7 +233,7 @@ def select_index_set_counts_thresh(index_matrix, index_matrix_start_col, sigleve
 
 ################################################################################################
 ### calculating multiple variable norm density score
-def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, small_value, qda_round, index_vector, insig_index, scale, index_count_thresh):
+def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, small_value, qda_round, index_vector, insig_index, scale):
 	print('calculating multiple variable norm density score...')
 	### initalize signal matrix for each index (dict)
 	index_signal_matrix_dict = {}
@@ -251,7 +250,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 		signal_matrix = np.log2(signal_matrix+small_value)
 	### scale
 	if scale == 'T':
-		signal_matrix_mean = np.median(signal_matrix, axis=0)
+		signal_matrix_mean = np.mean(signal_matrix, axis=0)
 		signal_matrix_std = np.std(signal_matrix, axis=0)
 		signal_matrix = (signal_matrix -  signal_matrix_mean) / signal_matrix_std
 	print('check scale...')
@@ -296,7 +295,6 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 					index_signal_matrix_dict[ index ].append( signal_vector )
 				else:
 					### keep order of index set
-					index_random = index
 					uniq_index.append( index )
 					index_signal_matrix_dict[ index ] = [ signal_vector ]
 			### in last round, we append to index_vector_filter for original index vector relabeling
@@ -317,7 +315,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 			#print(str(index)+': '+str(one_index_matrix.shape[0]))
 			### calculating index matrix covariance matrix & mean vector
 			one_index_matrix_cov = np.cov(one_index_matrix, rowvar = False)
-			one_index_matrix_mean = np.median(one_index_matrix, axis = 0)
+			one_index_matrix_mean = np.mean(one_index_matrix, axis = 0)
 			### append to covariance matrix dict & mean vector dict & index set matrix
 			index_signal_cov_dict[ index ] = one_index_matrix_cov
 			index_signal_mean_dict[ index ] = one_index_matrix_mean
@@ -363,35 +361,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 			index_p_vec.append(p_max)
 		print('calculating max p and index...DONE') 
 		index_p_vec = np.array(index_p_vec).reshape(len(index_p_vec),1)
-		index_name_vec = np.array(index_name_vec).reshape(len(index_p_vec),1)
-		print('remove insignificant index set...')
-		index_name, counts = np.unique(index_name_vec, return_counts=True)
-		### insig
-		insig_index = {}
-		for i, c in zip(index_name, counts):
-			if c < index_count_thresh:
-				insig_index[i] = c
-		print(insig_index)
-		print('replace insignificant index set labels...')
-		for replace_i in range(0, len(index_name_vec)):
-			index_name = index_name_vec[replace_i,0]
-			if (index_name in insig_index):
-				index_name_vec[replace_i,0] = index_random
-
-		print('replace insignificant index set labels...DONE')
-
-		print('replace insignificant index set signal mean...') 
-
-		for i in range(0, len(index_name_vec)):
-			index = index_name_vec[i, 0]
-			signal_vector = signal_matrix[i,:]
-			### if not in the insig_index vector, we use the index as one index set
-			if not (index in insig_index):
-				if index in index_signal_matrix_dict:
-					index_signal_matrix_dict[ index ].append( signal_vector )
-				else:
-					uniq_index.append( index )
-					index_signal_matrix_dict[ index ] = [ signal_vector ]		
+		index_name_vec = np.array(index_name_vec).reshape(len(index_name_vec),1)	
 	### return all objects
 	return { 'signal_matrix_bed': signal_matrix_bed, 'index_name_vec': index_name_vec, 'index_p_vec': index_p_vec, 'index_name_vec_index_set': index_name_vec_index_set, 'index_p_vec_index_set': index_p_vec_index_set, 'signal_matrix': signal_matrix, 'uniq_index': uniq_index, 'index_set_peak_counts_matrix': index_set_peak_counts_matrix, 'index_set_signal_mean_matrix': index_set_signal_mean_matrix, 'index_vector_filter': index_vector_filter }
 
@@ -467,7 +437,7 @@ def matrix_col_cal(matrix, function, para=None):
 
 ################################################################################################
 ### index set sth some score matrix
-def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col, uniq_index, method, smallnum, preorder, output_filename, plot_violin):
+def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col, uniq_index, method, smallnum, preorder, output_filename):
 	### read sth matrix file
 	sth_matrix = read2d_array(sth_matrix_file, 'str')
 	### rm unused cols
@@ -487,7 +457,6 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 	### get the index set score of sth
 	index_set_sth_matrix = []
 	index_set_list = []
-
 	for index_set in uniq_index:
 		### original index include all possible index (index number threshold will filter some index)
 		if index_set in sth_enriched_dict:
@@ -499,7 +468,7 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 				matrix_col = np.sum(matrix, axis=0)
 			elif method == 'mean':
 				matrix = np.array(sth_enriched_dict[ index_set ], dtype = float)
-				matrix_col = np.median(matrix, axis=0)
+				matrix_col = np.mean(matrix, axis=0)
 			elif method == 'mostfreq':
 				matrix = np.array(sth_enriched_dict[ index_set ], dtype = str)
 				matrix_col = matrix_col_cal(matrix, frequent)
@@ -538,93 +507,75 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 		call('rm ' + output_filename+'.index_set.txt', shell=True)
 
 	elif preorder =='T':
-		print('use negative binomial to get new index...')
-		m0 = sth_matrix_indexed[:,2:]
+		### use negative binomial to get new index
+		m0 = sth_matrix_indexed[:,1:]
 		m0 = np.array(m0, dtype=float)
-		for i in range(0, 2):
+		for i in range(0, 10):
 			if i==0:
 				m1 = m0
-				sigmean = np.median(m1, axis=0)
-				sigvar = np.var(m1, axis=0)
-				sigprob = sigmean / sigvar
 			else:
-				sigprob_list = []
-				for i in range(0, m1.shape[1]):
-					m1_i = m1[m1[:,i]<=thresh_list[i], i]
-					m1_i_mean = np.median(m1_i)
-					m1_i_var = np.var(m1_i)
-					m1_i_sigprob = m1_i_mean / m1_i_var
-					sigprob_list.append(m1_i_sigprob)
-				sigprob = np.array(sigprob_list)
-
+				m1 = m1[m1<=thresh]
+			sigmean = np.mean(m1)
+			sigvar = np.var(m1)
+			sigprob = sigmean / sigvar
 			### set threshold for sigprob
-			thresh_list = []
-			for sigprob_i in range(0,sigprob.shape[0]):
-				if sigprob[sigprob_i] <= 0.1:
-					### to avoid var too high relative to mean
-					sigprob[sigprob_i] = 0.1
-					sigsize_i = sigmean[sigprob_i] * sigprob[sigprob_i] / (1-sigprob[sigprob_i])
-					### get nb value
-					thresh1 = nbinom.ppf(0.95, sigsize_i, sigprob[sigprob_i])
-					thresh_i = thresh1
-				elif sigprob[sigprob_i] >= 1:
-					### to avoid mean too high relative to var
-					print('Should not use negative binomial!!!')
-					if i ==0:
-						thresh_i = poisson.ppf(0.95, sigmean[sigprob_i])
+			if sigprob <= 0.1:
+				### to avoid var too high relative to mean
+				sigprob = 0.1
+				sigsize = sigmean * sigprob / (1-sigprob)
+				### get nb value
+				thresh1 = nbinom.ppf(0.95, sigsize, sigprob)
+			elif sigprob >= 1:
+				### to avoid mean too high relative to var
+				print('Should not use negative binomial!!!')
+				if i ==0:
+					thresh = poisson.ppf(0.95, sigmean)
+				break
+
+			if i >=1:
+				if thresh1 == thresh:
+					print('converged!!!')
+					break
 				else:
-					sigsize_i = sigmean[sigprob_i] * sigprob[sigprob_i] / (1-sigprob[sigprob_i])
-					### get nb value
-					thresh1 = nbinom.ppf(0.95, sigsize_i, sigprob[sigprob_i])
-					thresh_i = thresh1					
-				thresh_list.append(thresh_i)
+					thresh = thresh1
+			else:
+				thresh = thresh1
+			print('round('+str(i)+'): '+str(thresh))
 
 		print('for index set matrix...')
 		### add new index to index_set matrix
 		new_index_set_vector = []
-		old_index_set2new_index_set = {}
-		### add id in case of same new labels
-		new_label_added_id = 1
 		for info in index_set_sth_matrix:
-			old_index = info[0]
 			info_sig = info[1:]
 			new_index = ''
-			print(info_sig)
-			print(thresh_list)
-			for s, t in zip(info_sig, thresh_list):
-				if float(s) > float(t):
+			for i in info_sig:
+				if float(i) > thresh:
 					new_index = new_index+'1'
 				else:
 					new_index = new_index+'0'
-
-			### add id in case of same new labels
-			new_index = new_index + str(new_label_added_id)
-			new_label_added_id = new_label_added_id+1
-			### append to index label list
-			old_index_set2new_index_set[old_index] = new_index
 			new_index_set_vector.append(new_index)
 		new_index_set_vector = np.array(new_index_set_vector)
 		print('sort by ni col & remove first ni col...')
 		print(new_index_set_vector[np.argsort(new_index_set_vector)])
 		new_index_set_order = np.argsort(new_index_set_vector)
 		index_set_sth_matrix_ni_ordered = index_set_sth_matrix[new_index_set_order,:]
-		### save order label vector
+		### save order vector
 		index_set_ni_sort = index_set_sth_matrix_ni_ordered[:,0].reshape(index_set_sth_matrix_ni_ordered.shape[0],1)
-		### replace index labels		
-		new_index_set_order_index_label = new_index_set_vector[new_index_set_order].reshape(new_index_set_vector.shape[0],1)
-		index_set_sth_matrix_ni_ordered = np.concatenate((new_index_set_order_index_label, index_set_sth_matrix_ni_ordered[:,1:]), axis=1)
-
 		### write output
 		write2d_array(index_set_sth_matrix_ni_ordered, output_filename+'.index_set.sort.txt')
-		### this one used old label for sort other matrices
 		write2d_array(index_set_ni_sort, output_filename+'.index_set_ni_sorted.txt')
 
 		print('for index matrix...')
 		### add new index to index matrix
 		new_index_vector = []
 		for info in sth_matrix_indexed:
-			old_index = info[0]
-			new_index = old_index_set2new_index_set[old_index]
+			info_sig = info[1:]
+			new_index = ''
+			for i in info_sig:
+				if float(i) > thresh:
+					new_index = new_index+'1'
+				else:
+					new_index = new_index+'0'
 			new_index_vector.append(new_index)
 		new_index_vector = np.array(new_index_vector)
 		print('sort by ni col & remove first ni col...')
@@ -632,38 +583,65 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 		sth_matrix_indexed_ni_ordered = sth_matrix_indexed[new_index_order,:]
 		### get index set counts
 		print('get index set counts...')
-		unique, counts = np.unique(new_index_vector, return_counts=True)
+		unique, counts = np.unique(sth_matrix_indexed_ni_ordered[:,0], return_counts=True)
 		unique_counts =  np.asarray((unique, counts)).T
 		write2d_array(unique_counts, output_filename+'.index_set.count.txt')
 		print(unique_counts)
 		### save order vector
-		index_ni_order_index_label = new_index_vector[new_index_order].reshape(new_index_vector.shape[0],1)
-		index_sth_matrix_ni_ordered = np.concatenate((index_ni_order_index_label, sth_matrix_indexed_ni_ordered[:,1:]), axis=1)
+		index_ni_sort = sth_matrix_indexed_ni_ordered[:,0].reshape(sth_matrix_indexed_ni_ordered.shape[0],1)
+		### write output
+		write2d_array(index_ni_sort, output_filename+'.index.sort.txt')
+
+	elif preorder =='kmeans':
+		### heirarchical clustering
+		n_cluster = index_set_sth_matrix.shape[0]
+		#model = AgglomerativeClustering(linkage='average',n_clusters=n_cluster, compute_full_tree=True)
+		model = KMeans(n_clusters=5, random_state=0)
+		model.fit(index_set_sth_matrix[:,1:])
+		hclust_label = model.labels_
+		### hclust label sort
+		index_set_ni_dict = {}
+		for index, ni in zip(index_set_sth_matrix, hclust_label):
+			index_set_ni_dict[index[0]] = ni
+		### reorder index matrix and index set matrix
+		print('reorder...')
+		print('for index set matrix...')
+		sth_matrix_index_set_ni_order = []
+		for index_set_sth_matrix_indexed in index_set_sth_matrix:
+			### read index
+			index_set_tmp = index_set_sth_matrix_indexed[0]
+			### index to hcluster labels
+			sth_matrix_index_set_ni_order.append(index_set_ni_dict[index_set_tmp])
+		### list to np.array
+		sth_matrix_index_set_ni_order = np.array(sth_matrix_index_set_ni_order)
+		print('sort by ni col & remove first ni col...')
+		index_set_ni_order = np.argsort(sth_matrix_index_set_ni_order)
+		index_set_sth_matrix_ni_ordered = index_set_sth_matrix[index_set_ni_order,:]
+		### save order vector
+		index_set_ni_sort = index_set_sth_matrix_ni_ordered[:,0].reshape(index_set_sth_matrix_ni_ordered.shape[0],1)
+		### write output
+		write2d_array(index_set_sth_matrix_ni_ordered, output_filename+'.index_set.sort.txt')
+		write2d_array(index_set_ni_sort, output_filename+'.index_set_ni_sorted.txt')
+		#call('sort -k1,1 ' + output_filename+'.index_set.txt ' + ' > ' + output_filename+'.index_set.sort.txt', shell=True)
+		#call('rm ' + output_filename+'.index_set.txt', shell=True)
+
+		print('for index matrix...')
+		sth_matrix_index_ni_order = []
+		for index in sth_matrix_indexed:
+			### read index
+			index_tmp = index[0]
+			### index to hcluster labels
+			sth_matrix_index_ni_order.append(index_set_ni_dict[index_tmp])
+		### list to np.array
+		sth_matrix_index_ni_order = np.array(sth_matrix_index_ni_order)
+		print(sth_matrix_index_ni_order.shape)
+		print('sort by ni col & remove first ni col...')
+		index_ni_order = np.argsort(sth_matrix_index_ni_order)
+		index_sth_matrix_ni_ordered = sth_matrix_indexed[index_ni_order,:]
 		### write output
 		write2d_array(index_sth_matrix_ni_ordered, output_filename+'.indexed.sort.txt')
-
-	### sort & save count vector
-	if plot_violin == 'T':
-		### convert new index matrix to index_set_signal_dict
-		index_set_index_label_dict = {}
-		for info in index_sth_matrix_ni_ordered:
-			label_name_tmp = info[0]
-			if not (label_name_tmp in index_set_index_label_dict):
-				index_set_index_label_dict[label_name_tmp] = [ info[2:] ]
-			else:
-				index_set_index_label_dict[label_name_tmp].append( info[2:] )
-		### plot violinplot
-		for index_set_label_name in index_set_index_label_dict:
-			signal_matrix = np.array(index_set_index_label_dict[index_set_label_name], dtype=float)
-			### plotting				
-			pos = range(1,signal_matrix.shape[1]+1)
-			print('plot violinplot of index:' + index_set_label_name)
-			print(signal_matrix.shape)
-			matrix_log = signal_matrix#np.log2(signal_matrix+0.1)
-			matrix_list = [matrix_log[:,i] for i in range(0,signal_matrix.shape[1])]
-			plt.figure()
-			plt.violinplot(matrix_list, pos, points=20, widths=0.5, showmeans=False, showextrema=False, showmedians=True)
-			plt.savefig(output_filename + '.violin.' + index_set_label_name + '.png')
+		#call('sort -k1,1 -k3,3rn ' + output_filename+'.indexed.txt ' + ' > ' + output_filename+'.indexed.sort.txt', shell=True)
+		#call('rm ' + output_filename+'.indexed.txt', shell=True)
 
 	else:
 		### read index order
@@ -687,10 +665,9 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 		sth_matrix_index_set_ni_order = np.array(sth_matrix_index_set_ni_order)
 		print('sort by ni col & remove first ni col...')
 		index_set_ni_order = np.argsort(sth_matrix_index_set_ni_order)
-		index_set_ni_order_index_label = sth_matrix_index_set_ni_order[index_set_ni_order].reshape(sth_matrix_index_set_ni_order.shape[0],1)
-		index_set_sth_matrix_ni_ordered = np.concatenate((index_set_ni_order_index_label, index_set_sth_matrix[index_set_ni_order,1:]), axis=1)
+		index_set_sth_matrix_ni_ordered = index_set_sth_matrix[index_set_ni_order,:]
 		### save order vector
-		#index_set_ni_sort = index_set_sth_matrix_ni_ordered[:,0].reshape(index_set_sth_matrix_ni_ordered.shape[0],1)
+		index_set_ni_sort = index_set_sth_matrix_ni_ordered[:,0].reshape(index_set_sth_matrix_ni_ordered.shape[0],1)
 		### write output
 		write2d_array(index_set_sth_matrix_ni_ordered, output_filename+'.index_set.sort.txt')
 
@@ -705,8 +682,7 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 		sth_matrix_index_ni_order = np.array(sth_matrix_index_ni_order)
 		print('sort by ni col & remove first ni col...')
 		index_ni_order = np.argsort(sth_matrix_index_ni_order)
-		index_ni_order_index_label = sth_matrix_index_ni_order[index_ni_order].reshape(sth_matrix_index_ni_order.shape[0],1)
-		index_sth_matrix_ni_ordered = np.concatenate((index_ni_order_index_label, sth_matrix_indexed[index_ni_order,1:]), axis=1)
+		index_sth_matrix_ni_ordered = sth_matrix_indexed[index_ni_order,:]
 		### write output
 		write2d_array(index_sth_matrix_ni_ordered, output_filename+'.indexed.sort.txt')		
 
@@ -765,7 +741,7 @@ signal_matrix_start_col = 5
 siglevel_counts = 0.95
 small_value = 1
 log_signal = 'T'
-qda_round = 10
+qda_round = 50
 bins_folder = '/Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/'
 index_matrix = read2d_array('homerTable3.peaks.filtered.interval.bed.index.matrix.txt', 'str')
 signal_matrix_od = read2d_array('homerTable3.peaks.filtered.interval.bed.signal.matrix.txt', 'str')
@@ -780,7 +756,7 @@ index_count_thresh_2 = insig_index_dict['index_count_thresh']
 index_vector_count_vec = insig_index_dict['index_vector_count_vec']
 
 ### calculating multiple variable norm density score
-mvn_density_score_dict = mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, small_value, qda_round, index_vector, insig_index, scale, index_count_thresh_2)
+mvn_density_score_dict = mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, small_value, qda_round, index_vector, insig_index, scale)
 signal_matrix_bed = mvn_density_score_dict['signal_matrix_bed']
 index_name_vec = mvn_density_score_dict['index_name_vec']
 index_p_vec = mvn_density_score_dict['index_p_vec']
@@ -789,7 +765,7 @@ index_p_vec_index_set = mvn_density_score_dict['index_p_vec_index_set']
 signal_matrix = mvn_density_score_dict['signal_matrix']
 uniq_index = mvn_density_score_dict['uniq_index']
 index_set_peak_counts_matrix = mvn_density_score_dict['index_set_peak_counts_matrix']
-
+index_set_signal_mean_matrix = mvn_density_score_dict['index_set_signal_mean_matrix']
 index_vector_filter = mvn_density_score_dict['index_vector_filter']
 
 print('check!!!check!!!check!!!check!!!check!!!check!!!')
@@ -805,18 +781,18 @@ print('check!!!check!!!check!!!check!!!check!!!check!!!')
 
 print('write signal mean matrix...')
 output_file_signal_index_set = output_file_signal+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_signal, 5, uniq_index, 'mean', 0,  'F', output_file_signal_index_set, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_signal, 5, uniq_index, 'mean', 0,  'F', output_file_signal_index_set)
 
 print('write binary sum matrix...')
 output_file_index_index_set = output_file_index+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index, 5, uniq_index, 'sum', 0, 'F', output_file_index_index_set, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index, 5, uniq_index, 'sum', 0, 'F', output_file_index_index_set)
 
 print('write pval mean matrix...')
 output_file_pval = 'homerTable3.peaks.filtered.interval.bed.pval.matrix.txt'+'.index_set.txt'
 p_matrix_index_set = np.concatenate((index_p_vec_index_set, index_p_vec_index_set), axis = 1)
 write2d_array( p_matrix_index_set, output_file_pval)
 output_file_pval_index_set = output_file_pval+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_pval, 1, uniq_index, 'mean', 0, 'F', output_file_pval_index_set, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_pval, 1, uniq_index, 'mean', 0, 'F', output_file_pval_index_set)
 
 print('write mvn index matrix...')
 output_file_index_mvn = 'homerTable3.peaks.filtered.interval.bed.mvn_index.matrix.txt'+'.index_set.txt'
@@ -836,22 +812,22 @@ write2d_array(index_mvn, output_file_index_mvn)
 
 print('write mvn binary sum matrix...')
 output_file_index_mvn_index_set = output_file_index_mvn+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index_mvn, 1, uniq_index, 'sum', 0, 'F', output_file_index_mvn_index_set, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_index_mvn, 1, uniq_index, 'sum', 0, 'F', output_file_index_mvn_index_set)
 
 print('write chip enrichment matrix...')
 smallnum = 50
 output_file_chip_index_set = output_file_chip+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_chip, 5, uniq_index, 'enrich', smallnum, 'F', output_file_chip_index_set, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_chip, 5, uniq_index, 'enrich', smallnum, 'F', output_file_chip_index_set)
 
 print('write ideas most frequent label matrix...')
 output_file_ideas_index_set_freq = output_file_ideas+'.freq'+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostfreq', 0, 'F', output_file_ideas_index_set_freq, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostfreq', 0, 'F', output_file_ideas_index_set_freq)
 print('write ideas most enriched label matrix...')
 output_file_ideas_index_set_enrich = output_file_ideas+'.enrich'+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostenrich', 0, 'F', output_file_ideas_index_set_enrich, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'mostenrich', 0, 'F', output_file_ideas_index_set_enrich)
 print('write ideas Shanno Entropy matrix...')
 output_file_ideas_index_set_sh = output_file_ideas+'.sh'+'.index_set.txt'
-#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'sh', 0, 'F', output_file_ideas_index_set_sh, 'F')
+#index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ideas, 5, uniq_index, 'sh', 0, 'F', output_file_ideas_index_set_sh)
 
 
 
@@ -938,33 +914,33 @@ print('use pheatmap to plot p-value index & index set heatmap...')
 
 print('write signal mean matrix...')
 output_file_signal_index_set = output_file_signal
-index_set_score(index_name_vec, index_p_vec, output_file_signal, 5, uniq_index, 'mean', 0, 'T', output_file_signal_index_set, 'T')
+index_set_score(index_name_vec, index_p_vec, output_file_signal, 5, uniq_index, 'mean', 0, 'T', output_file_signal_index_set)
 
 print('write binary sum matrix...')
 output_file_index_index_set = output_file_index
-index_set_score(index_name_vec, index_p_vec, output_file_index, 5, uniq_index, 'sum', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_index_index_set, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_index, 5, uniq_index, 'sum', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_index_index_set)
 
 print('write pval mean matrix...')
 output_file_pval = 'homerTable3.peaks.filtered.interval.bed.pval.matrix.txt'
 p_matrix = np.concatenate((index_p_vec, index_p_vec), axis = 1)
 write2d_array( p_matrix, output_file_pval)
 output_file_pval_index_set = output_file_pval
-index_set_score(index_name_vec, index_p_vec, output_file_pval, 1, uniq_index, 'mean', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_pval_index_set, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_pval, 1, uniq_index, 'mean', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_pval_index_set)
 
 print('write chip enrichment matrix...')
 smallnum = 50
 output_file_chip_index_set = output_file_chip
-index_set_score(index_name_vec, index_p_vec, output_file_chip, 5, uniq_index, 'enrich', smallnum, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_chip_index_set, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_chip, 5, uniq_index, 'enrich', smallnum, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_chip_index_set)
 
 print('write ideas most frequent label matrix...')
 output_file_ideas_index_set_freq = output_file_ideas+'.freq'
-index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostfreq', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_ideas_index_set_freq, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostfreq', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_ideas_index_set_freq)
 print('write ideas most enriched label matrix...')
 output_file_ideas_index_set_enrich = output_file_ideas+'.enrich'
-index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostenrich', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_ideas_index_set_enrich, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'mostenrich', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_ideas_index_set_enrich)
 print('write ideas Shanno Entropy matrix...')
 output_file_ideas_index_set_sh = output_file_ideas+'.sh'
-index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'sh', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_ideas_index_set_sh, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_ideas, 5, uniq_index, 'sh', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_ideas_index_set_sh)
 
 print('write mvn index matrix...')
 output_file_index_mvn = 'homerTable3.peaks.filtered.interval.bed.mvn_index.matrix.txt'
@@ -984,7 +960,7 @@ write2d_array(index_mvn, output_file_index_mvn)
 
 print('write mvn binary sum matrix...')
 output_file_index_mvn_index_set = output_file_index_mvn
-index_set_score(index_name_vec, index_p_vec, output_file_index_mvn, 1, uniq_index, 'sum', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_index_mvn_index_set, 'F')
+index_set_score(index_name_vec, index_p_vec, output_file_index_mvn, 1, uniq_index, 'sum', 0, output_file_signal_index_set+'.index_set_ni_sorted.txt', output_file_index_mvn_index_set)
 
 
 
@@ -998,13 +974,11 @@ signal_log2_transform = 'F'
 signal_log2_transform_add_smallnum = 0.001
 signal_index_matrix_start_col = 3
 signal_index_set_matrix_start_col = 2
-output_file_signal = 'homerTable3.peaks.filtered.interval.bed.signal.matrix.txt'
 
 print('use pheatmap to plot signal index & index set heatmap...')
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal+'.indexed.sort.txt' + ' ' + output_file_signal+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
-#time Rscript /Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/plot_pheatmap.R homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt.png signal_list.txt 3 red white F 0.001 
 
 index_high_color = 'black'
 index_low_color = 'white'
