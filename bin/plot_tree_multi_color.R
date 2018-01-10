@@ -1,55 +1,40 @@
+library(networkD3)
+library(data.tree)
+library(igraph)
+
 ####################################################
 ### get parameters
 args = commandArgs(trailingOnly=TRUE)
 signal_matrix_file = args[1]
-output_filename = args[2]
-signal_input_list = args[3]
-signal_range_color_file = args[4]
+cd_tree = args[2]
+signal_range_color_file = args[3]
+signal_input_list = args[4]
 signal_matrix_start_col = args[5]
-heatmap_boarder_col = args[6]
-log2 = args[7]
-smallnum = as.numeric(args[8])
-
-####################################################
-### use rect to plot heatmaps
-color_heatmap = function(color_matrix, outputname, format, border_color){
-	format(outputname, width = 1000, height = 1000) ### output name
-	par(mar=c(5,0.5,0.5,0.5)) ### set heatmap margins
-	colbin_len = 10 ### column bin size
-	rowbin_len = 10 ### row bin size
-	### row reverse
-	color_matrix = color_matrix[nrow(color_matrix):1,]
-	### plot areas
-	plot(c(0, dim(color_matrix)[2]*colbin_len), c(0, dim(color_matrix)[1]*rowbin_len), xaxt = "n", yaxt = "n", xaxs="i", yaxs="i", type = "n", xlab = "", ylab = "",main = "")
-	### add color matrix colname as heatmap colname
-	axis(1, c(1 : dim(color_matrix)[2])*colbin_len-0.5*colbin_len, colnames(color_matrix), las = 2, col.axis = "black", tick=FALSE)
-	### use for loop to add rectangle with different color
-	for (coln in c(1 : dim(color_matrix)[2])){ ### loop columns
-		for (rown in c(1 : dim(color_matrix)[1])){ ### loop rows
-			### add rectangle
-			rect( (coln-1)*colbin_len, (rown-1)*rowbin_len, coln*colbin_len, rown*rowbin_len, col = color_matrix[rown, coln], border=border_color, lwd = 0 )
-		}
-	}
-	dev.off()
-}
+log2 = args[6]
+smallnum = as.numeric(args[7])
 
 #################################################### 
 ############ read input files
-#################################################### 
-###### read signal matrix 
-heatmap_save_type = png
-
+####################################################
 ### read signal matrix file
 signal_matrix_od = as.matrix(read.table(signal_matrix_file, header=FALSE))
 ### extract signal matrix without info
 signal_matrix = signal_matrix_od[ , signal_matrix_start_col:dim(signal_matrix_od)[2] ]
+### get index_set name
+index_set_name = signal_matrix_od[,1]
 ### convert to numeric matrix
 class(signal_matrix) = 'numeric'
 
 ###### read colnames file
 colname_file = read.table(signal_input_list, header=F)
-### add colnames
-colnames(signal_matrix) = colname_file[,2]
+colname = colname_file[,2]
+
+### read cell development tree file
+tree = read.table(cd_tree, header = F, sep=',')
+tree.df = as.data.frame(tree)
+colnames(tree.df) = c('Node.1', 'Node.2')
+
+### get color list
 
 signal_matrix_color = signal_matrix
 ###### read color file
@@ -107,11 +92,21 @@ for (i in seq(1,dim(signal_range_color)[1])){
 	signal_matrix_color[ signal_color_cell ] = color_matrix_tmp[signal_color_cell]
 }
 
-####################################################
-###### plot heatmap
-color_heatmap(signal_matrix_color, output_filename, heatmap_save_type, heatmap_boarder_col)
+### plot trees
+for (i in seq(1,dim(signal_matrix_color)[1])){
+	### get color vector from color matrix
+	value_col = signal_matrix_color[i,]
 
+	### get tree
+	tree.igraph = graph.data.frame(tree.df, directed=TRUE)
+	tree_names = V(tree.igraph)$name
+	### sort colnames by tree nodes id
+	match_id = match(tree_names, colname)
+	V(tree.igraph)$color = value_col[match_id]
+	V(tree.igraph)$size = 30
 
-
-
+	png(paste(signal_input_list, index_set_name[i], '.tree.png', sep = ''))
+	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
+	dev.off()
+}
 
