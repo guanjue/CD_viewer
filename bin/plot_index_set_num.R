@@ -1,0 +1,22 @@
+####################################################
+### get parameters
+args = commandArgs(trailingOnly=TRUE)
+binary_matrix_file = args[1]
+output_file = args[2]
+uselog2 = args[3]
+smallnum = as.numeric(args[4])
+
+### read file
+binary_matrix = as.matrix(read.table(binary_matrix_file, header=FALSE))
+index_set_table = table(binary_matrix)
+index_set_num = index_set_table
+
+
+if (uselog2=='T'){
+	index_set_num = log2(index_set_num+smallnum)
+}
+
+png(output_file)
+plot(density(index_set_num))
+abline(v=log2(500), col='red')
+dev.off()
