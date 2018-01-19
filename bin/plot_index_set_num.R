@@ -18,5 +18,5 @@ if (uselog2=='T'){
 
 png(output_file)
 plot(density(index_set_num))
-abline(v=log2(500), col='red')
+abline(v=log2(1000), col='red')
 dev.off()
