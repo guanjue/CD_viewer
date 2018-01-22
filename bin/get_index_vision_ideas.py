@@ -846,7 +846,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 	method = 'map'
 	sort_sigbed = 'T'
 	print('get signal matrix...')
-	get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+	#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 
 
@@ -955,7 +955,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 	print('use pheatmap to plot signal index & index set heatmap...')
 	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
 
 	index_high_color = 'black'
@@ -967,7 +967,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 	print('use pheatmap to plot signal index & index set heatmap...')
 	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_index_set+'.index_set.sort.txt' + ' ' + output_file_index_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_index_set+'.indexed.sort.txt' + ' ' + output_file_index_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_index_set+'.indexed.sort.txt' + ' ' + output_file_index_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 
 	call('time Rscript ' + bins_folder + 'plot_pheatmap_counts.R ' + output_file_index_index_set+'.index_set.count.txt' + ' ' + output_file_index_index_set+'.counts.txt' + '.png' + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 
@@ -980,7 +980,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 	print('use pheatmap to plot p-value index & index set heatmap...')
 	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 
 
@@ -1043,7 +1043,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 	print('use pheatmap to plot signal index & index set heatmap...')
 	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal+'.indexed.sort.txt' + ' ' + output_file_signal+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal+'.indexed.sort.txt' + ' ' + output_file_signal+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
 	### plot tree
 	call('time Rscript ' + bins_folder + 'plot_tree.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
@@ -1059,7 +1059,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 	print('use pheatmap to plot signal index & index set heatmap...')
 	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + ' ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 
 
 	pval_high_color = 'orange'
@@ -1070,8 +1070,8 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 	pval_index_set_matrix_start_col = 2
 
 	print('use pheatmap to plot p-value index & index set heatmap...')
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
-	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+	#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 ############################################################################
 #time python get_index_vision_ideas.py -a 200_noblack.11_22_2017.bed -b peak_list.txt -c signal_list.txt -d 20color_list.txt -t 10000 -s /storage/home/gzx103/group/software/CD_viewer/bin/
