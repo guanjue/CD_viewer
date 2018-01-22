@@ -6,8 +6,7 @@ output_file = args[2]
 uselog2 = args[3]
 smallnum = as.numeric(args[4])
 fdr_pval_thresh = as.numeric(args[5])
-line_num = as.numeric(args[6])
-file_list = args[7]
+split_filename = args[6]
 ### read file
 bed = as.data.frame(read.table(bed_file, header=FALSE))
 sig = as.numeric(bed[,5])
@@ -52,11 +51,17 @@ bed_sig_binary = as.data.frame(cbind(bed[,c(1,2,3,4)], sig_binary))
 
 head(bed_sig_binary)
 
-### read file list
-file_list = read.table(file_list, header=FALSE)
-n = 0
-for (file in file_list){
-	write.table(bed_sig_binary[1:line_num,], paste(file_list[n+1], '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
-	n = n+1
+write.table(bed_sig_binary, paste(bed_file, '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+write.table(min(sig_1), paste(bed_file, '.binary.allbins.thresh.txt', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+### split
+output_filelist = read.table(split_filename, header = F)
+n_files = dim(output_filelist)[1]
+n_lines = dim(bed_sig_binary)[1] / n_files
+for (i in c(1:n_files)){
+	bed_sig_binary_tmp = bed_sig_binary[c( (1+n_lines*(i-1)):(n_lines*i) ),]
+	write.table(bed_sig_binary_tmp, paste(bed_file, output_filelist[i], '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
 }
+
+
 
