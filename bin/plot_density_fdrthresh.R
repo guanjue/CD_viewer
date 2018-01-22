@@ -7,8 +7,8 @@ uselog2 = args[3]
 smallnum = as.numeric(args[4])
 fdr_pval_thresh = as.numeric(args[5])
 ### read file
-bed = as.matrix(read.table(bed_file, header=FALSE))
-sig = as.numeric(bed[,4])
+bed = as.data.frame(read.table(bed_file, header=FALSE))
+sig = as.numeric(bed[,5])
 print(bed_file)
 if (uselog2=='T'){
 	sig = log2(sig+smallnum)
@@ -29,7 +29,7 @@ sig_pval = pnorm(sig_z, lower.tail = FALSE)
 sig_fdr_pval = p.adjust(sig_pval, 'fdr')
 
 ### one-side test
-fdr_pval_thresh = fdr_pval_thresh/2
+fdr_pval_thresh = fdr_pval_thresh
 
 sig_0 = sig[sig_pval >= fdr_pval_thresh]
 sig_1 = sig[sig_pval < fdr_pval_thresh]
@@ -45,6 +45,9 @@ print((max(sig_0)))
 sig_binary = sig
 sig_binary[sig_fdr_pval >= fdr_pval_thresh] = 0
 sig_binary[sig_fdr_pval < fdr_pval_thresh] = 1
-bed_sig_binary = cbind(bed[,c(1,2,3)], sig_binary)
 
-write.table(bed_sig_binary, paste(bed_file, '.binary.allbins.bed'), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+bed_sig_binary = as.data.frame(cbind(bed[,c(1,2,3,4)], sig_binary))
+
+head(bed_sig_binary)
+
+write.table(bed_sig_binary, paste(bed_file, '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)

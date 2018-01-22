@@ -1,4 +1,3 @@
-#module load python/2.7
 import os
 import numpy as np
 from subprocess import call
@@ -268,7 +267,7 @@ def select_index_set_counts_thresh(index_matrix, index_matrix_start_col, sigleve
 		index_count_thresh_2 = 2**index_count_thresh(index_vector_count_vec_select, siglevel_counts)
 		print('index_count_thresh_1: ' + str(index_count_thresh_1))
 		print('index_count_thresh_2: ' + str(index_count_thresh_2))
-	index_count_thresh_2 = 500
+	index_count_thresh_2 = 10000
 	print('select index peak counts thresh: ' + str(index_count_thresh_2))
 	### extract insignificant index names
 	insig_index = []
@@ -823,10 +822,10 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 
 ################################################################################################
 ### get Binary index matrix
-peak_bed = 'cell_merged_state17.bed'
+peak_bed = '200_noblack_11_22_2017_all.bed'
 peak_bed_colnum = 4
 mark_list_index = 'peak_list.txt'
-output_file_index = 'cell_merged_state17.index.matrix.txt'
+output_file_index = '200_noblack_11_22_2017_all.index.matrix.txt'
 signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
@@ -834,10 +833,10 @@ print('get binary matrix...')
 get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 ### get signal matrix
-peak_bed = 'cell_merged_state17.bed'
+peak_bed = '200_noblack_11_22_2017_all.bed'
 peak_bed_colnum = 4
 mark_list_signal = 'signal_list.txt'
-output_file_signal = 'cell_merged_state17.signal.matrix.txt'
+output_file_signal = '200_noblack_11_22_2017_all.signal.matrix.txt'
 signal_col = 4
 method = 'map'
 sort_sigbed = 'T'
@@ -854,12 +853,12 @@ small_value = 1
 log_signal = 'F'
 qda_round = 1
 bins_folder = '/Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/'
-index_matrix = read2d_array('cell_merged_state17.bed', 'str')
-signal_matrix_od = read2d_array('cell_merged_state17.signal.matrix.txt', 'str')
+index_matrix = read2d_array('200_noblack_11_22_2017_all.bed', 'str')
+signal_matrix_od = read2d_array('200_noblack_11_22_2017_all.signal.matrix.txt', 'str')
 scale = 'F'
 
 ### use while loop to select the threshold of index set counts
-index_matrix = read2d_array('cell_merged_state17.index.matrix.txt', 'str')
+index_matrix = read2d_array('200_noblack_11_22_2017_all.index.matrix.txt', 'str')
 insig_index_dict = select_index_set_counts_thresh(index_matrix, index_matrix_start_col, siglevel_counts)
 index_vector = insig_index_dict['index_vector']
 insig_index = insig_index_dict['insig_index']

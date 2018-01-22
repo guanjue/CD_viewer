@@ -5,6 +5,7 @@ binary_matrix_file = args[1]
 output_file = args[2]
 uselog2 = args[3]
 smallnum = as.numeric(args[4])
+limline = as.numeric(args[5])
 
 ### read file
 binary_matrix = as.matrix(read.table(binary_matrix_file, header=FALSE))
@@ -18,5 +19,9 @@ if (uselog2=='T'){
 
 png(output_file)
 plot(density(index_set_num))
-abline(v=log2(1000), col='red')
+if (uselog2=='T'){
+	abline(v=log2(limline), col='red')
+} else {
+	abline(v=(limline), col='red')
+}
 dev.off()
