@@ -834,7 +834,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 	method = 'intersect'
 	sort_sigbed = 'T'
 	print('get binary matrix...')
-	get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
+	#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 	### get signal matrix
 	peak_bed = peak_bed_file+'.bed'
