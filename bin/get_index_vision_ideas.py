@@ -154,7 +154,7 @@ def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_co
 			### get peak's ideas labels based on intersect region; midpoint dist; TF peak length
 			get_cRE_ideas_state(data_info_matrix, 1, 2, 3, 4, 5, sort_bed_file, 4, mark_bed_file+'.tmp01.txt')
 		### cut the map number column
-		call('cut -f'+ str(peak_bed_colnum+1) +" -d$'\t' " + mark_bed_file+'.tmp01.txt' + ' > ' + mark_bed_file+'.tmp02.txt', shell=True)
+		call('cut -f'+ str(4) +" -d$'\t' " + mark_bed_file+'.tmp01.txt' + ' > ' + mark_bed_file+'.tmp02.txt', shell=True)
 		### cbind to matrix
 		call('paste ' + output_file + ' ' + mark_bed_file+'.tmp02.txt' + ' > ' + output_file+'.tmp.txt' + ' && mv ' + output_file+'.tmp.txt ' + output_file, shell=True)
 		### remove tmp files
