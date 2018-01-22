@@ -242,7 +242,7 @@ def bed2track(bed_inputfile, info_index_set, outputfile, color_list, reverse=Non
 
 ################################################################################################
 ### use while loop to select the threshold of index set counts
-def select_index_set_counts_thresh(index_matrix, index_matrix_start_col, siglevel_counts):
+def select_index_set_counts_thresh(index_matrix, index_matrix_start_col, siglevel_counts, indexset_num_thesh):
 	index_count_dict = index_matrix2index_count_dict(index_matrix, index_matrix_start_col)
 	#print(index_count_dict)
 	index_vector = index_count_dict['index_vector']
@@ -268,7 +268,7 @@ def select_index_set_counts_thresh(index_matrix, index_matrix_start_col, sigleve
 		index_count_thresh_2 = 2**index_count_thresh(index_vector_count_vec_select, siglevel_counts)
 		print('index_count_thresh_1: ' + str(index_count_thresh_1))
 		print('index_count_thresh_2: ' + str(index_count_thresh_2))
-	index_count_thresh_2 = 500
+	index_count_thresh_2 = indexset_num_thesh
 	print('select index peak counts thresh: ' + str(index_count_thresh_2))
 	### extract insignificant index names
 	insig_index = []
@@ -820,7 +820,7 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 
 
 ################################################################################################
-def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, color_list_file, script_folder):
+def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, color_list_file, indexset_num_thesh, script_folder):
 	################################################################################################
 	### get Binary index matrix
 	#peak_bed = 'cell_merged_state17.bed'
@@ -865,7 +865,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 	### use while loop to select the threshold of index set counts
 	index_matrix = read2d_array(output_file_index, 'str')
-	insig_index_dict = select_index_set_counts_thresh(index_matrix, index_matrix_start_col, siglevel_counts)
+	insig_index_dict = select_index_set_counts_thresh(index_matrix, index_matrix_start_col, siglevel_counts, indexset_num_thesh)
 	index_vector = insig_index_dict['index_vector']
 	insig_index = insig_index_dict['insig_index']
 	index_count_thresh_2 = insig_index_dict['index_count_thresh']
@@ -1074,13 +1074,13 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 	call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 ############################################################################
-#time python get_index_vision_ideas.py -a 200_noblack.11_22_2017.bed -b peak_list.txt -c signal_list.txt -d 20color_list.txt -s /storage/home/gzx103/group/software/CD_viewer/bin/
+#time python get_index_vision_ideas.py -a 200_noblack.11_22_2017.bed -b peak_list.txt -c signal_list.txt -d 20color_list.txt -t 10000 -s /storage/home/gzx103/group/software/CD_viewer/bin/
 
 import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"ha:b:c:d:s:")
+		opts, args = getopt.getopt(argv,"ha:b:c:d:t:s:")
 	except getopt.GetoptError:
 		print 'time python ideas_matrix2ideas_bed.py -i input_matrix -a bed_start_col -b bed_end_col -c sig_start_col -d sig_end_col -o outputname'
 		sys.exit(2)
@@ -1099,8 +1099,9 @@ def main(argv):
 			color_list_file=str(arg.strip())
 		elif opt=="-s":
 			script_folder=str(arg.strip())
-
-	get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, color_list_file, script_folder)
+		elif opt=="-t":
+			indexset_num_thesh=int(arg.strip())
+	get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, color_list_file, indexset_num_thesh, script_folder)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
