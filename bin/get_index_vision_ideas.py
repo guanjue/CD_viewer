@@ -898,7 +898,7 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 	#######################
 
 	sort_bed_file = peak_bed + '.sort.bed'
-	color_list = '20color_list.txt'
+	#color_list = '20color_list.txt'
 	color_list = color_list_file
 	print('insig_index')
 	print(insig_index)
@@ -906,10 +906,10 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 	output_file_signal_index_set = output_file_signal+'.index_set.txt'
 	index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_signal, 5, uniq_index, 'mean', 0,  'F', output_file_signal_index_set, 'F', sort_bed_file, insig_index)
 	### bed to track
-	bed2track(output_file_signal_index_set+'.sort.bed', output_file_signal_index_set+'.index_set.sort.txt', output_file_signal+'.sort.rgb.bed', color_list)
-	call('sort -k1,1 -k2,2n ' + output_file_signal+'.sort.rgb.bed' + '> ' + output_file_signal+'.sort.rgb.sort.bed', shell=True)
-	call('mv ' + output_file_signal+'.sort.rgb.sort.bed' + ' ' + output_file_signal+'.sort.rgb.bed', shell=True)
-	call(bins_folder + 'bedToBigBed' + ' ' + output_file_signal+'.sort.rgb.bed' + ' ' + 'mm10.chrom.sizes' + ' ' + output_file_signal+'.sort.rgb.bb', shell=True)
+	#bed2track(output_file_signal_index_set+'.sort.bed', output_file_signal_index_set+'.index_set.sort.txt', output_file_signal+'.sort.rgb.bed', color_list)
+	#call('sort -k1,1 -k2,2n ' + output_file_signal+'.sort.rgb.bed' + '> ' + output_file_signal+'.sort.rgb.sort.bed', shell=True)
+	#call('mv ' + output_file_signal+'.sort.rgb.sort.bed' + ' ' + output_file_signal+'.sort.rgb.bed', shell=True)
+	#call(bins_folder + 'bedToBigBed' + ' ' + output_file_signal+'.sort.rgb.bed' + ' ' + 'mm10.chrom.sizes' + ' ' + output_file_signal+'.sort.rgb.bb', shell=True)
 	call('time Rscript ' + bins_folder + 'plot_color_table.R'+' ' + output_file_signal+'.sort.rgb.bed.color.table.txt' + ' ' + output_file_signal+'.sort.rgb.bed.color.table.png', shell=True)
 	call('paste ' + output_file_signal_index_set+'.sort.bed' + ' ' + output_file_signal_index_set + '.indexed.sort.txt' + ' | cut -f-4,8- > ' + output_file_signal_index_set+'.sort.bed.withlabel.txt', shell=True)
 
