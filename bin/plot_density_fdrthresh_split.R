@@ -56,11 +56,12 @@ write.table(min(sig_1), paste(bed_file, '.binary.allbins.thresh.txt', sep=''), s
 
 ### split
 output_filelist = read.table(split_filename, header = F)
+print(output_filelist)
 n_files = dim(output_filelist)[1]
 n_lines = dim(bed_sig_binary)[1] / n_files
 for (i in c(1:n_files)){
 	bed_sig_binary_tmp = bed_sig_binary[c( (1+n_lines*(i-1)):(n_lines*i) ),]
-	write.table(bed_sig_binary_tmp, paste(bed_file, output_filelist[i], '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+	write.table(bed_sig_binary_tmp, paste(bed_file, output_filelist[i,], '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
 }
 
 
