@@ -851,8 +851,8 @@ def get_index_vision_ideas(peak_bed_file, peak_list_file, signal_list_file, colo
 
 
 	### Multi-variable norm p-value (QDA)
-	index_matrix_start_col = 5
-	signal_matrix_start_col = 5
+	index_matrix_start_col = 4
+	signal_matrix_start_col = 4
 	siglevel_counts = 0.95
 	small_value = 1
 	log_signal = 'F'
