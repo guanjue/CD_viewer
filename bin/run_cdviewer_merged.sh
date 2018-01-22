@@ -14,31 +14,24 @@ done
 
 for mark in $(cat mark_list.txt)
 do
+	echo $mark
 	ls sig_bed/*$mark*.fsm.signal.bed > $mark'_sig_list.txt'
-	cat sig_bed/*$mark*.fsm.signal.bed > $mark'merged.bed'
-	Rscript /storage/home/gzx103/group/software/CD_viewer/bin/plot_density_fdrthresh_split.R $mark'merged.bed' $mark'merged.bed.fsm.signal.hist.png' T 0.1 0.05
+	cat sig_bed/*$mark*.fsm.signal.bed > $mark'.merged.bed'
+	echo 'plot hist'
+	Rscript /storage/home/gzx103/group/software/CD_viewer/bin/plot_density_fdrthresh_split.R $mark'.merged.bed' $mark'.merged.bed.fsm.signal.hist.png' T 2 0.05
+	echo 'get binary bed'
+	cat $mark'.merged.bed.binary.allbins.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1) print 1}'  > $mark'.merged.bed.binary.bed'
+	cat $mark'.merged.bed.binary.allbins.bed' | awk -F '\t' -v OFS='\t' '{print $5}'  > $mark'.merged.bed.binary.allbins.txt'
+	### mv to folder
+	mv $mark'.merged.bed.fsm.signal.hist.png' hist/
+	mv $mark'.merged.bed' sig_bed/
+	mv $mark'.merged.bed.binary.allbins.bed' binary_allbins_bed/
+	mv $mark'.merged.bed.binary.allbins.txt' binary_allbins_bed/
+	mv $mark'.merged.bed.binary.bed' binary_bed/
 done
 
-	Rscript /storage/home/gzx103/group/software/CD_viewer/bin/plot_density_fdrthresh.R $cm'.fsm.signal.bed' $cm'.fsm.signal.hist.png' T 0.1 0.05
-	cat $cm'.fsm.signal.bed.binary.allbins.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1) print 1}'  > $cm'.fsm.signal.bed.binary.bed'
-	wc -l $cm'.fsm.signal.bed.binary.bed'
-	mv $cm'.fsm.signal.hist.png' hist/
-	mv $cm'.fsm.signal.bed' sig_bed/
-	mv $cm'.fsm.signal.bed.binary.allbins.bed' binary_allbins_bed/
-	mv $cm'.fsm.signal.bed.binary.bed' binary_bed/
-done
-
-### get threshold
-for bedfile in $(cat bed_list.txt)
-do
-	echo $bedfile
-	cat $bedfile'.binary.allbins.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1) print 1}'  > $bedfile'.binary.bed'
-	wc -l $bedfile'.binary.bed'
-	cat $bedfile'.binary.allbins.bed' | awk -F '\t' -v OFS='\t' '{print $4}' > $bedfile'.binary.txt'
-done
-
-paste beds/*.binary.txt | awk -F '\t' -v OFS='\t' '{print $1"_"$2"_"$3"_"$4"_"$5"_"$6"_"$7"_"$8}' > binary_matrix.txt
-paste beds/*.cell_merged_state17.bed | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,int($4*100)/100"_"int($8*100)/100"_"int($12*100)/100"_"int($16*100)/100"_"int($20*100)/100"_"int($24*100)/100"_"int($28*100)/100"_"int($32*100)/100}' > signal_matrix.txt
+paste binary_allbins_bed/*.merged.bed.binary.allbins.txt | awk -F '\t' -v OFS='\t' '{print $1"_"$2"_"$3"_"$4"_"$5"_"$6"_"$7"_"$8}' > binary_matrix.txt
+paste sig_bed/*.merged.bed | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,int($4*100)/100"_"int($8*100)/100"_"int($12*100)/100"_"int($16*100)/100"_"int($20*100)/100"_"int($24*100)/100"_"int($28*100)/100"_"int($32*100)/100}' > signal_matrix.txt
 
 ### plot density of index set number
 Rscript /Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/plot_index_set_num.R binary_matrix.txt binary_matrix.png T 1
