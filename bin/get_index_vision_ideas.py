@@ -158,7 +158,7 @@ def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_co
 		### cbind to matrix
 		call('paste ' + output_file + ' ' + mark_bed_file+'.tmp02.txt' + ' > ' + output_file+'.tmp.txt' + ' && mv ' + output_file+'.tmp.txt ' + output_file, shell=True)
 		### remove tmp files
-		call('rm ' + mark_bed_file+'.tmp01.txt' + ' ' + mark_bed_file+'.tmp02.txt' + ' ' + mark_bed_file+'.sort.bed', shell=True)
+		#call('rm ' + mark_bed_file+'.tmp01.txt' + ' ' + mark_bed_file+'.tmp02.txt' + ' ' + mark_bed_file+'.sort.bed', shell=True)
 	mark_list_vec.close()
 
 ################################################################################################
