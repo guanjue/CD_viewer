@@ -50,4 +50,5 @@ bed_sig_binary = as.data.frame(cbind(bed[,c(1,2,3,4)], sig_binary))
 
 head(bed_sig_binary)
 
-write.table(bed_sig_binary, paste(bed_file, '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+#write.table(bed_sig_binary, paste(bed_file, '.binary.allbins.bed', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+write.table(fdr_pval_thresh, paste(bed_file, '.binary.allbins.thresh.txt', sep=''), sep='\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
