@@ -26,7 +26,7 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 		filename_list.append(records.split()[1])
 		### read file
 		signal_track = read2d_array(filename, float)
-		if log2='T':
+		if log2=='T':
 			signal_track = np.log2(signal_track + small_num)
 		signal_track_list.append(signal_track)
 
