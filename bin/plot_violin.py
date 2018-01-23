@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from subprocess import call
+import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 ################################################################################################
