@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from subprocess import call
 ################################################################################################
 ### read 2d array
 def read2d_array(filename,dtype_used):
@@ -33,7 +34,7 @@ def index_label2significant_label(od_index_label_table, significant_index_label,
 	significant_index_label_dict = {}
 	for records in significant_index_label:
 		label_tmp = records[significant_index_label_col-1]
-		significant_index_label_dict[label_tmp] = ''
+		significant_index_label_dict[label_tmp] = 0
 	### get insignif label
 	insignif_label = ''
 	print(od_index_label[0][0])
@@ -41,19 +42,29 @@ def index_label2significant_label(od_index_label_table, significant_index_label,
 	for i in range(0,len(eg)-1):
 		insignif_label = insignif_label + 'X_'
 	insignif_label = insignif_label + 'X'
+	significant_index_label_dict[insignif_label] = 0
 	### od to signif
 	od2signif_index_label = []
 	for records in od_index_label:
 		if records[0] in significant_index_label_dict:
 			od2signif_index_label.append(records[0])
+			significant_index_label_dict[records[0]] = significant_index_label_dict[records[0]] + 1
 		else:
 			od2signif_index_label.append(insignif_label)
+			significant_index_label_dict[insignif_label] = significant_index_label_dict[insignif_label] + 1
 	### write output 
 	r1=open(outputname,'w')
 	for records in od2signif_index_label:
 		r1.write(str(records)+'\n')
 	r1.close()
 
+	### write index number table
+	r2=open(outputname+'.index_set_num.txt','w')
+	for records in significant_index_label_dict:
+		r2.write(str(records)+'\t'+str(significant_index_label_dict[records])+'\n')
+	r2.close()
+	call('sort -k1,1 ' + outputname+'.index_set_num.txt' + ' > ' + outputname+'.index_set_num.indexsort.txt', shell=True)
+	call('rm ' + outputname+'.index_set_num.txt', shell=True)
 ############################################################################
 #time python index_label2significant_label.py -i B_SPL.binary_matrix.txt -s all5cell.binary_matrix.png.binary.counts.thresh.bed -c 2 -o B_SPL.binary_matrix.signif.txt
 
