@@ -28,7 +28,7 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 		signal_track = read2d_array(filename, float)
 		if log2=='T':
 			signal_track = np.log2(signal_track + small_num)
-		signal_track_list.append(signal_track)
+		signal_track_list.append(signal_track[:,0])
 
 	### plot violin plot
 	pos = range(1,len(filename_list)+1)
