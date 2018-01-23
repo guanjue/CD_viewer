@@ -38,7 +38,7 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 	print('plot violinplot of index:' + outputname)
 	plt.figure()
 	plt.violinplot(signal_track_list, pos, points=50, widths=0.7, showmeans=True, showextrema=False, showmedians=False)
-	plt.xticks(pos, filename_list)
+	plt.xticks(pos, filename_list, rotation='vertical')
 	plt.savefig(outputname + '.violin.png')
 
 ############################################################################
