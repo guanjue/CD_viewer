@@ -33,17 +33,16 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 			signal_track = np.log2(signal_track + small_num)
 		signal_track_list.append(signal_track[:,0])
 
-	print((signal_track_list[0]))
-	print((signal_track_list[1]))
 	### plot violin plot
 	pos = range(1,len(filename_list)+1)
 	print('plot violinplot of index:' + outputname)
 	plt.figure()
 	plt.violinplot(signal_track_list, pos, points=20, widths=0.5, showmeans=True, showextrema=False, showmedians=False)
+	plt.axis(filename_list)
 	plt.savefig(outputname + '.violin.png')
 
 ############################################################################
-#time python plot_violin.py -i  -a 4 -s all5cell.binary_matrix.png.binary.counts.thresh.bed -c 2 -o B_SPL.meansig.signif.txt
+#time python plot_violin.py -i atac_list.txt -o atac_list -l T -s 2
 
 import getopt
 import sys
