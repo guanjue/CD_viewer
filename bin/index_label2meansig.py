@@ -37,8 +37,8 @@ def index_label2meansig(bed_signal_matrix_file, bed_sig_col, significant_index_l
 		significant_index_label_dict[label_tmp] = 0
 	### get insignif label
 	insignif_label = ''
-	print(od_index_label[0][0])
-	eg = od_index_label[0][0].split('_')
+	print(bed_signal_matrix[0][-1])
+	eg = bed_signal_matrix[0][-1].split('_')
 	for i in range(0,len(eg)-1):
 		insignif_label = insignif_label + 'X_'
 	insignif_label = insignif_label + 'X'
@@ -65,7 +65,7 @@ def index_label2meansig(bed_signal_matrix_file, bed_sig_col, significant_index_l
 	call('sort -k1,1 ' + outputname + ' > ' + outputname+'.meansig.indexsort.txt', shell=True)
 	call('rm ' + outputname, shell=True)
 ############################################################################
-#time python index_label2meansig.py -i B_SPL.binary_matrix.txt -a 4 -s all5cell.binary_matrix.png.binary.counts.thresh.bed -c 2 -o B_SPL.binary_matrix.signif.txt
+#time python index_label2meansig.py -i B_SPL.signal_indexlabel_matrix.signif.txt -a 4 -s all5cell.binary_matrix.png.binary.counts.thresh.bed -c 2 -o B_SPL.meansig.signif.txt
 
 import getopt
 import sys
