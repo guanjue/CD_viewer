@@ -64,7 +64,7 @@ def index_label2meansig(bed_signal_matrix_file, bed_sig_col, significant_index_l
 	for records in bed_signal_matrix_dict:
 		sig_matrix = np.array(bed_signal_matrix_dict[records], dtype=float)
 		print(sig_matrix.shape)
-		sig_matrix_mean = np.mean(sig_matrix, axis=1)
+		sig_matrix_mean = np.mean(sig_matrix, axis=0)
 		print(sig_matrix_mean)
 		r1.write(str(records)+'\t')
 		for i in range(0,len(sig_matrix_mean)-1):
