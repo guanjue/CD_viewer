@@ -36,10 +36,10 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 	### plot violin plot
 	pos = range(1,len(filename_list)+1)
 	print('plot violinplot of index:' + outputname)
-	plt.figure()
+	plt.figure(figsize=(10,10), dpi=200)
 	plt.violinplot(signal_track_list, pos, points=50, widths=0.7, showmeans=True, showextrema=False, showmedians=False)
 	plt.xticks(pos, filename_list, rotation='vertical')
-	plt.savefig(outputname + '.violin.png')
+	plt.savefig(outputname + '.violin.pdf')
 
 ############################################################################
 #time python plot_violin.py -i atac_list.txt -o atac_list -l T -s 2
