@@ -19,7 +19,7 @@ color_heatmap = function(color_matrix, high_color, low_color, format, outputname
 	### plot pheatmap
 	my_colorbar=colorRampPalette(c(low_color, high_color))(n = 128)
 	col_breaks = c(seq(0, 2000,length=33))
-	pheatmap(color_matrix, color=my_colorbar, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE)
+	pheatmap(color_matrix, color=my_colorbar, cluster_cols = FALSE,cluster_rows=TRUE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE)
 	dev.off()
 }
 
