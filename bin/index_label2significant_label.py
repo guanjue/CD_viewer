@@ -39,6 +39,7 @@ def index_label2significant_label(od_index_label_table, significant_index_label,
 		significant_index_label_dict[label_tmp] = ''
 	### get insignif label
 	insignif_label = ''
+	print(od_index_label[0][0])
 	eg = od_index_label[0][0].split('_')
 	for i in range(0,len(eg)-1):
 		insignif_label = insignif_label + 'X_'
