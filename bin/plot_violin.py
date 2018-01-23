@@ -30,7 +30,8 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 			signal_track = np.log2(signal_track + small_num)
 		signal_track_list.append(signal_track[:,0])
 
-	print(head(signal_track_list))
+	print((signal_track_list[0]))
+	print((signal_track_list[1]))
 	### plot violin plot
 	pos = range(1,len(filename_list)+1)
 	print('plot violinplot of index:' + outputname)
