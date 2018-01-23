@@ -47,6 +47,7 @@ def index_label2meansig(bed_signal_matrix_file, bed_sig_col, significant_index_l
 	bed_signal_matrix_dict = {}
 	for records in bed_signal_matrix:
 		index_set_label = records[-1]
+		print(index_set_label)
 		if index_set_label in significant_index_label_dict:
 			bed_signal_matrix_dict[index_set_label].append( records[(bed_sig_col-1):len(records)-1] )
 		else:
