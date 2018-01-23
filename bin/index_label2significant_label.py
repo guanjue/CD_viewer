@@ -5,16 +5,13 @@ import numpy as np
 def read2d_array(filename,dtype_used):
 	import numpy as np
 	data=open(filename,'r')
-	### get colnames
-	colnames = data.readline()
-	colnames = [x.strip() for x in colnames.split(' ')]
 	data0=[]
 	for records in data:
-		tmp = [x.strip() for x in records.split(' ')]
+		tmp = [x.strip() for x in records.split('\t')]
 		data0.append(tmp)
 	data0 = np.array(data0,dtype=dtype_used)
 	data.close()
-	return {'data0': data0, 'colnames': colnames}
+	return data0
 
 ################################################################################################
 ### write 2d matrix
@@ -39,7 +36,7 @@ def index_label2significant_label(od_index_label_table, significant_index_label,
 		significant_index_label_dict[label_tmp] = ''
 	### get insignif label
 	insignif_label = ''
-	print(od_index_label[0])
+	print(od_index_label[0][0])
 	eg = od_index_label[0][0].split('_')
 	for i in range(0,len(eg)-1):
 		insignif_label = insignif_label + 'X_'
