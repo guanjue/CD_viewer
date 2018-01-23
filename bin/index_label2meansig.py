@@ -47,11 +47,18 @@ def index_label2meansig(bed_signal_matrix_file, bed_sig_col, significant_index_l
 	bed_signal_matrix_dict = {}
 	for records in bed_signal_matrix:
 		index_set_label = records[-1]
-		print(index_set_label)
+		#print(index_set_label)
 		if index_set_label in significant_index_label_dict:
-			bed_signal_matrix_dict[index_set_label].append( records[(bed_sig_col-1):len(records)-1] )
+			if index_set_label in bed_signal_matrix_dict:
+				bed_signal_matrix_dict[index_set_label].append( records[(bed_sig_col-1):len(records)-1] )
+			else:
+				bed_signal_matrix_dict[index_set_label] = [ records[(bed_sig_col-1):len(records)-1] ]
 		else:
-			bed_signal_matrix_dict[index_set_label] = [ records[(bed_sig_col-1):len(records)-1] ]
+			index_set_label = insignif_label
+			if index_set_label in bed_signal_matrix_dict:
+				bed_signal_matrix_dict[index_set_label].append( records[(bed_sig_col-1):len(records)-1] )
+			else:
+				bed_signal_matrix_dict[index_set_label] = [ records[(bed_sig_col-1):len(records)-1] ]			
 	### write output 
 	r1=open(outputname,'w')
 	for records in bed_signal_matrix_dict:
