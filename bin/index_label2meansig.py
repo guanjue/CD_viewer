@@ -66,8 +66,8 @@ def index_label2meansig(bed_signal_matrix_file, bed_sig_col, significant_index_l
 		sig_matrix_mean = np.mean(sig_matrix, axis=1)
 		r1.write(str(records)+'\t')
 		for i in range(0,len(sig_matrix_mean)-1):
-			r1.write(sig_matrix_mean[i]+'\t')
-		r1.write(sig_matrix_mean[len(sig_matrix_mean)-1]+'\n')
+			r1.write(str(sig_matrix_mean[i])+'\t')
+		r1.write(str(sig_matrix_mean[len(sig_matrix_mean)-1])+'\n')
 	r1.close()
 
 	call('sort -k1,1 ' + outputname + ' > ' + outputname+'.meansig.indexsort.txt', shell=True)
