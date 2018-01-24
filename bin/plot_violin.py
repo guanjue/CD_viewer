@@ -30,11 +30,12 @@ def plot_violin(input_file_list, outputname, log2, small_num, lowerlim, upperlim
 		### read file
 		signal_track = read2d_array(filename, float)
 		### select data by lower & upper limit
-		signal_track = signal_track[signal_track[:,0]>=lowerlim,]
-		signal_track = signal_track[signal_track[:,0]<=upperlim,]
+		signal_track = signal_track[signal_track[:,0]>=lowerlim,:]
+		signal_track = signal_track[signal_track[:,0]<=upperlim,:]
 		### log2 transform
 		if log2=='T':
 			signal_track = np.log2(signal_track + small_num)
+		print(signal_track[:,0])
 		signal_track_list.append(signal_track[:,0])
 
 	### plot violin plot
