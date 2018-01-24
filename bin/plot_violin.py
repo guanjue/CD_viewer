@@ -69,6 +69,10 @@ def main(argv):
 			log2=str(arg.strip())
 		elif opt=="-s":
 			small_num=float(arg.strip())		
+		elif opt=="-d":
+			lowerlim=float(arg.strip())		
+		elif opt=="-u":
+			upperlim=float(arg.strip())		
 
 
 	plot_violin(input_file_list, outputname, log2, small_num, lowerlim, upperlim)
