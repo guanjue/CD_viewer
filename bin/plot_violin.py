@@ -40,6 +40,8 @@ def plot_violin(input_file_list, outputname, log2, small_num, lowerlim, upperlim
 
 	### plot violin plot
 	pos = range(1,len(filename_list)+1*5,5)
+	print(len(pos))
+	print(len(signal_track_list))
 	print('plot violinplot of index:' + outputname)
 	plt.figure(figsize=(10,10), dpi=200)
 	plt.violinplot(signal_track_list, pos, points=50, widths=4, showmeans=True, showextrema=False, showmedians=False)
