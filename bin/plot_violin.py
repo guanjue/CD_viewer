@@ -20,7 +20,7 @@ def read2d_array(filename,dtype_used):
 
 ################################################################################################
 ### plot violin
-def plot_violin(input_file_list, outputname, log2, small_num):
+def plot_violin(input_file_list, outputname, log2, small_num, lowerlim, upperlim):
 	input_file_list = open(input_file_list, 'r')
 	signal_track_list = []
 	filename_list = []
@@ -29,6 +29,10 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 		filename_list.append(records.split()[1])
 		### read file
 		signal_track = read2d_array(filename, float)
+		### select data by lower & upper limit
+		signal_track = signal_track[signal_track[:,0]>=lowerlim,]
+		signal_track = signal_track[signal_track[:,0]<=upperlim,]
+		### log2 transform
 		if log2=='T':
 			signal_track = np.log2(signal_track + small_num)
 		signal_track_list.append(signal_track[:,0])
@@ -42,20 +46,20 @@ def plot_violin(input_file_list, outputname, log2, small_num):
 	plt.savefig(outputname + '.violin.pdf')
 
 ############################################################################
-#time python plot_violin.py -i atac_list.txt -o atac_list -l T -s 2
+#time python plot_violin.py -i atac_list.txt -o atac_list -l T -s 2 -l 4 -u 100
 
 import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hi:o:l:s:")
+		opts, args = getopt.getopt(argv,"hi:o:l:s:d:u:")
 	except getopt.GetoptError:
-		print 'time python index_label2meansig.py -i input_file_list -o outputname -l log2 -s small_num'
+		print 'time python index_label2meansig.py -i input_file_list -o outputname -l log2 -s small_num -d lowerlim -u upperlim'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'time python index_label2meansig.py -i input_file_list -o outputname -l log2 -s small_num'
+			print 'time python index_label2meansig.py -i input_file_list -o outputname -l log2 -s small_num -d lowerlim -u upperlim'
 			sys.exit()
 		elif opt=="-i":
 			input_file_list=str(arg.strip())
@@ -67,7 +71,7 @@ def main(argv):
 			small_num=float(arg.strip())		
 
 
-	plot_violin(input_file_list, outputname, log2, small_num)
+	plot_violin(input_file_list, outputname, log2, small_num, lowerlim, upperlim)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
