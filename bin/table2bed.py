@@ -36,7 +36,7 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign):
 	ct_array = []
 	for i in range(0,header_binary.shape[0]):
 		ct = header_binary[i].split(sep_sign)[0]
-		#print(ct)
+		print(ct)
 		if not (ct in ct_dict):
 			ct_dict[ct] = [ binary[:,i] ]
 			ct_array.append(ct)
@@ -50,8 +50,8 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign):
 		### get pk in the ct
 		binary_matrix_used = binary_matrix_rowsum != 0
 		### merge bed and binary label
-		#print(bed.shape)
-		#print(np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1)).shape)
+		print(bed.shape)
+		print(np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1)).shape)
 		bed_tmp_all = np.concatenate((bed, np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1))), axis=1)
 		### only keep pk
 		bed_tmp_ct = bed_tmp_all[binary_matrix_used,:]
