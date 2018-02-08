@@ -24,7 +24,7 @@ def write2d_array(array,output):
 		r1.write(str(records[len(records)-1])+'\n')
 	r1.close()
 
-def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed):
+def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign):
 	### read input
 	data_all = read2d_array(input_table_file, str)
 	header_all = data_all[0,:]
