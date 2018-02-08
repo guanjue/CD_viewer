@@ -121,7 +121,7 @@ def get_cRE_ideas_state(data_info_matrix, id_col, lb_col, cover_col, middist_col
 def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_col, method, sort):
 	### sort input bed files
 	sort_bed_file = peak_bed + '.sort.bed'
-	call('gsort -k1,1 -V -s -k2,2n ' + peak_bed + ' > ' + sort_bed_file, shell=True)
+	call('sort -k1,1 -V -s -k2,2n ' + peak_bed + ' > ' + sort_bed_file, shell=True)
 	call('cp ' + sort_bed_file + ' ' + output_file, shell=True)
 	### generate index mark matrix
 	mark_list_vec = open(mark_list, 'r')
@@ -135,7 +135,7 @@ def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_co
 		celltype_list.append(tmp[1])
 		### sort bianry label bed files
 		if sort == 'T':
-			call('gsort -k1,1 -V -s -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
+			call('sort -k1,1 -V -s -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
 		else:
 			call('cp ' + mark_bed_file + ' ' + mark_bed_file+'.sort.bed', shell=True)
 		### use bedtools to generate the index/signal matrix
