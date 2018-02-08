@@ -822,7 +822,7 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 
 ################################################################################################
 ### get Binary index matrix
-peak_bed = 'atac.180124.bed'#'200_noblack.sample.bed'
+peak_bed = 'atac_20cell.bed'#'200_noblack.sample.bed'
 peak_bed_colnum = 4
 mark_list_index = 'peak_list.txt'
 output_file_index = peak_bed + '.index.matrix.txt'
@@ -872,7 +872,7 @@ siglevel_counts = 0.95
 small_value = 1
 log_signal = 'T'
 qda_round = 1
-bins_folder = '/Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/'
+bins_folder = '/storage/home/gzx103/group/software/CD_viewer/bin/'
 index_matrix = read2d_array(peak_bed + '.index.matrix.txt', 'str')
 signal_matrix_od = read2d_array(peak_bed + '.signal.matrix.txt', 'str')
 scale = 'F'
@@ -965,7 +965,7 @@ index_set_score(index_name_vec_index_set, index_p_vec_index_set, output_file_ide
 
 
 #######################
-'''
+
 mark_list_ideas = 'ideas_list.txt'
 ideas_range_color_file = 'ideas_range_color.txt'
 output_file_ideas_index_set = peak_bed + '.ideas.matrix.txt'
@@ -987,7 +987,7 @@ call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_se
 print('use rect to plot ideas heatmap...with Shannon Entropy')
 call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-'''
+
 signal_high_color = 'red'
 signal_low_color = 'white'
 signal_log2_transform = 'F'
