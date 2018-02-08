@@ -35,7 +35,7 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed):
 	ct_dict = {}
 	ct_array = []
 	for i in range(0,header_binary.shape[0]):
-		ct = header_binary[i].split('_')[0]
+		ct = header_binary[i].split(sep_sign)[0]
 		#print(ct)
 		if not (ct in ct_dict):
 			ct_dict[ct] = [ binary[:,i] ]
