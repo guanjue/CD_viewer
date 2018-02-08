@@ -65,20 +65,20 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed):
 
 
 ############################################################################
-#time python table2bed.py -i tmp.txt -b 4 -s 36 -s 66
+#time python table2bed.py -i tmp.txt -b 4 -s 36 -s 66 -p _
 
 import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hi:b:s:e:")
+		opts, args = getopt.getopt(argv,"hi:b:s:e:p:")
 	except getopt.GetoptError:
-		print 'time python table2bed.py -i input_table_file -b 4 -s binary_start_col -e binary_end_col'
+		print 'time python table2bed.py -i input_table_file -b 4 -s binary_start_col -e binary_end_col -p sep_sign'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'time python table2bed.py -i input_table_file -b 4 -s binary_start_col -e binary_end_col'
+			print 'time python table2bed.py -i input_table_file -b 4 -s binary_start_col -e binary_end_col -p sep_sign'
 			sys.exit()
 		elif opt=="-i":
 			input_table_file=str(arg.strip())
@@ -88,8 +88,10 @@ def main(argv):
 			binary_col_st=int(arg.strip())
 		elif opt=="-e":
 			binary_col_ed=int(arg.strip())		
+		elif opt=="-p":
+			sep_sign=str(arg.strip())	
 
-	table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed)
+	table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
