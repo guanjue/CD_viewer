@@ -1,5 +1,5 @@
 library(networkD3)
-library(data.tree)
+#library(data.tree)
 library(igraph)
 
 ####################################################
