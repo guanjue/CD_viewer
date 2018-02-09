@@ -134,10 +134,10 @@ for (i in seq(1,dim(signal_matrix_color)[1])){
 	### sort colnames by tree nodes id
 	match_id = match(tree_names, colname)
 	V(tree.igraph)$color = value_col[match_id]
-	V(tree.igraph)$size = 40
+	V(tree.igraph)$size = 20
 
-	png(paste(signal_input_list, index_set_name[i], '.tree.sh.png', sep = ''), width = 800, height = 800)
-	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)), layout=l2)
+	png(paste(signal_input_list, index_set_name[i], '.tree.sh.png', sep = ''), width = 1600, height = 1600)
+	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
 

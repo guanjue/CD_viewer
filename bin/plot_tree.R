@@ -59,7 +59,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	V(tree.igraph)$size = 40
 
 	png(paste(signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 800, height = 800)
-	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)), layout=l2)
+	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
 
