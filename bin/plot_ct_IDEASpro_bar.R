@@ -48,14 +48,14 @@ ideas_state_matrix_uniq_sort = sort(ideas_state_matrix_uniq)
 print('set heatmap colors')
 rgb_col_num=read.table(ideas_state_color,header=F)
 rgb_col_num=as.matrix(rgb_col_num[,3])
-print(rgb_col_num)
+#print(rgb_col_num)
 rgb_col=apply(rgb_col_num,1,function(x) read_color(x))
 my_colorbar=colorRampPalette(rgb_col)(n = dim(rgb_col_num)[1])
 
 
-for (j in c(1:length(index_set_id_uniq_sort))){
-	print(paste('index set', toString(index_set_id_uniq_sort[j])))
-	signal_matrix_tmp = signal_matrix[index_set_id==index_set_id_uniq_sort[j],]
+for (k in c(1:length(index_set_id_uniq_sort))){
+	print(paste('index set', toString(index_set_id_uniq_sort[k])))
+	signal_matrix_tmp = signal_matrix[index_set_id==index_set_id_uniq_sort[k],]
 	###### extract counts matrix
 	print('extract counts matrix')
 	counts_matrix = c()
@@ -78,8 +78,7 @@ for (j in c(1:length(index_set_id_uniq_sort))){
 	colnames(counts_matrix_t) = colnames(signal_matrix)
 
 	### save figure
-	print('save figure')
-	pdf(paste(toString(index_set_id_uniq_sort[j]), '.', cREs_IDEASpro_outfile, sep=''), 16, 16)
+	pdf(paste(toString(index_set_id_uniq_sort[k]), '.', cREs_IDEASpro_outfile, sep=''), 16, 16)
 	barplot(counts_matrix_t, col=my_colorbar)
 	dev.off()
 }
