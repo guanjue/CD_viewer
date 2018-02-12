@@ -22,7 +22,7 @@ signal_matrix_od = as.matrix(read.table(index_matrix_ideas_state_inputfile, head
 print(head(signal_matrix_od))
 print(dim(signal_matrix_od))
 ### extract signal matrix without info
-signal_matrix = signal_matrix_od[ , c(2:dim(signal_matrix_od)[2]) ]
+signal_matrix = signal_matrix_od[ , c(3:dim(signal_matrix_od)[2]) ]
 ### convert to numeric matrix
 class(signal_matrix) = 'numeric'
 ###### read colnames file
@@ -47,13 +47,13 @@ ideas_state_matrix_uniq_sort = sort(ideas_state_matrix_uniq)
 ### set heatmap colors
 print('set heatmap colors')
 rgb_col_num=read.table(ideas_state_color,header=F)
-rgb_col_num=rgb_col_num[,3]
+rgb_col_num=as.matrix(rgb_col_num[,3])
 print(rgb_col_num)
 rgb_col=apply(rgb_col_num,1,function(x) read_color(x))
 my_colorbar=colorRampPalette(rgb_col)(n = dim(rgb_col_num)[1])
 
 
-for (j in range(1, dim(index_set_id_uniq_sort)[1])){
+for (j in range(1, length(index_set_id_uniq_sort))){
 	print(paste('index set', toString(index_set_id_uniq_sort[j])))
 	signal_matrix_tmp = signal_matrix[index_set_id==index_set_id_uniq_sort[j],]
 	###### extract counts matrix
