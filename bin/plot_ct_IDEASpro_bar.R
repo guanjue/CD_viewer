@@ -48,6 +48,7 @@ ideas_state_matrix_uniq_sort = sort(ideas_state_matrix_uniq)
 print('set heatmap colors')
 rgb_col_num=read.table(ideas_state_color,header=F)
 rgb_col_num=as.matrix(rgb_col_num[,3])
+rgb_col_num = rgb_col_num[c((length(rgb_col_num)-1):1,length(rgb_col_num))]
 #print(rgb_col_num)
 rgb_col=apply(rgb_col_num,1,function(x) read_color(x))
 my_colorbar=colorRampPalette(rgb_col)(n = dim(rgb_col_num)[1])
