@@ -53,8 +53,8 @@ for (k in c(1:length(index_set_id_uniq_sort))){
 	colnames(signal_table_df) = c('celltype', 'signal')
 	#png(paste(toString(k), '.', toString(index_set_id_uniq_sort[k]), '.', outfile, sep=''))#, dim(signal_matrix)[2]+5, dim(signal_matrix)[2]+5)
 	p = ggplot(signal_table_df, aes(factor(celltype), signal), )
-	p + geom_violin(trim = FALSE, aes(fill = 'red')) + scale_x_discrete(labels=colname) + theme(legend.position="none", axis.text.x = element_text(angle=270))
-	ggsave(paste(toString(k), '.', toString(index_set_id_uniq_sort[k]), '.', outfile, sep=''), width = dim(signal_matrix)[2]+10, height = dim(signal_matrix)[2])
+	p + geom_violin(scale = 'width', aes(fill = 'red')) + scale_x_discrete(labels=colname) + theme(legend.position="none", axis.text.x = element_text(angle=270)) + stat_summary(fun.y=mean, geom='point', shape=23, size=4)
+	ggsave(paste(toString(k-1), '.', toString(index_set_id_uniq_sort[k]), '.', outfile, sep=''), width = dim(signal_matrix)[2]+10, height = dim(signal_matrix)[2])
 }
 
 

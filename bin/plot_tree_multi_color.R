@@ -1,6 +1,6 @@
-library(networkD3)
+library(networkD3, lib.loc='/storage/home/gzx103/work/r_package/')
 #library(data.tree)
-library(igraph)
+library(igraph, lib.loc='/storage/home/gzx103/work/r_package/')
 
 ####################################################
 ### get parameters
