@@ -1157,6 +1157,11 @@ call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_i
 ### plot tree
 call('time Rscript ' + bins_folder + 'plot_tree_multi_color.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 call('time Rscript ' + bins_folder + 'plot_tree_multi_color_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+print('plot barplot...')
+call('mkdir bar/', shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
+call('mv *bar.pdf bar/', shell=True)
+
 
 chip_high_color = 'blue'
 chip_low_color = 'white'
@@ -1182,8 +1187,6 @@ call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 
-print('plot barplot...')
-call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 
 
