@@ -53,7 +53,7 @@ rgb_col=apply(rgb_col_num,1,function(x) read_color(x))
 my_colorbar=colorRampPalette(rgb_col)(n = dim(rgb_col_num)[1])
 
 
-for (j in range(1, length(index_set_id_uniq_sort))){
+for (j in c(1:length(index_set_id_uniq_sort))){
 	print(paste('index set', toString(index_set_id_uniq_sort[j])))
 	signal_matrix_tmp = signal_matrix[index_set_id==index_set_id_uniq_sort[j],]
 	###### extract counts matrix
