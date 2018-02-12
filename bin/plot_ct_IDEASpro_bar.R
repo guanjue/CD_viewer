@@ -19,6 +19,8 @@ read_color = function(x){
 ### read signal matrix file
 print('read signal matrix file')
 signal_matrix_od = as.matrix(read.table(index_matrix_ideas_state_inputfile, header=FALSE))
+print(head(signal_matrix_od))
+print(dim(signal_matrix_od))
 ### extract signal matrix without info
 signal_matrix = signal_matrix_od[ , c(2:dim(signal_matrix_od)[2]) ]
 ### convert to numeric matrix
