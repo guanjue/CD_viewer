@@ -1117,6 +1117,9 @@ call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal+'.i
 
 ### plot tree
 call('time Rscript ' + bins_folder + 'plot_tree.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('mkdir violin/', shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
+call('mv *violin.pdf violin/', shell=True)
 
 #time Rscript /Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/plot_pheatmap.R homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt.png signal_list.txt 3 red white F 0.001 
 
