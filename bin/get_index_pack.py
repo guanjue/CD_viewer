@@ -151,7 +151,7 @@ def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_co
 			### used bedtools map to get the average signal of each peak
 			call('bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
 			### convert bedtools window output to matrix of pk and intersect ideas label info (intersect region; midpoint dist; TF peak length)
-			data_info_matrix = ideas_label_info(mark_bed_file+'.tmp01.txt', 4, 8, 2, 6)
+			data_info_matrix = ideas_label_info(mark_bed_file+'.tmp01.txt', 4, 9, 2, 6)
 			### get peak's ideas labels based on intersect region; midpoint dist; TF peak length
 			get_cRE_ideas_state(data_info_matrix, 1, 2, 3, 4, 5, sort_bed_file, 4, mark_bed_file+'.tmp01.txt')
 		### cut the map number column
