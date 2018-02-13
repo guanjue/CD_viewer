@@ -750,7 +750,7 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 		write2d_array(index_sth_matrix_ni_ordered, output_filename+'.indexed.sort.txt')
 
 	### sort & save count vector
-	if 'T' == 'T':
+	if preorder == 'T':
 		### convert new index matrix to index_set_signal_dict
 		index_set_index_label_dict = {}
 		for info in index_sth_matrix_ni_ordered:
@@ -830,7 +830,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get binary matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 ### get signal matrix
 peak_bed_colnum = 4
@@ -840,7 +840,7 @@ signal_col = 5
 method = 'map'
 sort_sigbed = 'F'
 print('get signal matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 
 ### get ideas label matrix
@@ -851,7 +851,7 @@ signal_col = 'N/A'
 method = 'window'
 sort_sigbed = 'F'
 print('get ideas matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
 
 ### get TF ChIP-seq matrix
 peak_bed_colnum = 4
@@ -861,7 +861,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get chip matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
 
 
 ### Multi-variable norm p-value (QDA)
