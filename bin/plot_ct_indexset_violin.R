@@ -41,15 +41,13 @@ index_set_id_uniq_sort = sort(index_set_id_uniq)
 for (k in c(1:length(index_set_id_uniq))){
 	print(paste('index set', toString(index_set_id_uniq[k])))
 	signal_matrix_tmp = signal_matrix[index_set_id==index_set_id_uniq[k],]
-	signal_table = c()
+	signal_table_df = c()
 	for (i in c(1:dim(signal_matrix_tmp)[2])){
-		signal_table_tmp = cbind(rep(colname[i],dim(signal_matrix_tmp)[1]), signal_matrix_tmp[,i])
-		class(signal_table_tmp) = 'numeric'
-		signal_table = rbind(signal_table, signal_table_tmp)
+		signal_table_id = rep(colname[i],dim(signal_matrix_tmp)[1])
+		signal_table_tmp = data.frame(signal_table_id, signal_matrix_tmp[,i])
+		signal_table_df = rbind(signal_table_df, signal_table_tmp)
 	}
-
 	### save figure
-	signal_table_df = as.data.frame(signal_table)
 	colnames(signal_table_df) = c('celltype', 'signal')
 	#png(paste(toString(k), '.', toString(index_set_id_uniq[k]), '.', outfile, sep=''))#, dim(signal_matrix)[2]+5, dim(signal_matrix)[2]+5)
 	p = ggplot(signal_table_df, aes(factor(celltype), signal), )
