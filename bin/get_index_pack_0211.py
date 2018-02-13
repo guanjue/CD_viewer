@@ -808,10 +808,9 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get binary matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
+get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 ### get signal matrix
-#peak_bed = 'atac.180124.bed'
 peak_bed_colnum = 4
 mark_list_signal = 'signal_list.txt'
 output_file_signal = peak_bed + '.signal.matrix.txt'
@@ -819,7 +818,7 @@ signal_col = 5
 method = 'map'
 sort_sigbed = 'F'
 print('get signal matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 
 ### get ideas label matrix
@@ -830,7 +829,7 @@ signal_col = 'N/A'
 method = 'window'
 sort_sigbed = 'F'
 print('get ideas matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
+get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
 
 ### get TF ChIP-seq matrix
 peak_bed_colnum = 4
@@ -840,7 +839,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get chip matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
 
 
 ### Multi-variable norm p-value (QDA)
@@ -957,14 +956,14 @@ ideas_index_boarder_color = 'NA'
 ideas_index_set_boarder_color = 'gray'
 
 print('use rect to plot ideas heatmap...')
-#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + '.png ' + mark_list_ideas + ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_matrix_start_col) + ' ' + ideas_index_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_rect.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 
 print('use rect to plot ideas heatmap...with Shannon Entropy')
-#call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 
 signal_high_color = 'red'
 signal_low_color = 'white'
@@ -974,8 +973,8 @@ signal_index_matrix_start_col = 3
 signal_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot signal index & index set heatmap...')
-#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
 
 
@@ -990,7 +989,7 @@ print('use pheatmap to plot signal index & index set heatmap...')
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + ' ' + output_file_index_mvn_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_set_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + ' ' + output_file_index_mvn_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(index_index_matrix_start_col) + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 
-#call('time Rscript ' + bins_folder + 'plot_pheatmap_counts.R ' + output_file_index_index_set+'.index_set.count.txt' + ' ' + output_file_index_index_set+'.counts.txt' + '.png' + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap_counts.R ' + output_file_index_index_set+'.index_set.count.txt' + ' ' + output_file_index_index_set+'.counts.txt' + '.png' + ' ' + index_high_color + ' ' + index_low_color + ' ' + index_log2_transform + ' ' + str(index_log2_transform_add_smallnum), shell=True)
 
 pval_high_color = 'orange'
 pval_low_color = 'white'
@@ -1000,8 +999,8 @@ pval_index_matrix_start_col = 3
 pval_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot p-value index & index set heatmap...')
-#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.index_set.sort.txt' + ' ' + output_file_pval_index_set+'.index_set.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_set_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_pval_index_set+'.indexed.sort.txt' + ' ' + output_file_pval_index_set+'.indexed.sort.txt' + '.png ' + mark_list_index + ' ' + str(pval_index_matrix_start_col) + ' ' + pval_high_color + ' ' + pval_low_color + ' ' + pval_log2_transform + ' ' + str(pval_log2_transform_add_smallnum), shell=True)
 
 
 
@@ -1014,8 +1013,8 @@ chip_index_matrix_start_col = 3
 chip_index_set_matrix_start_col = 2
 
 print('use pheatmap to plot signal index & index set heatmap...')
-#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.index_set.sort.txt' + ' ' + output_file_chip_index_set+'.index_set.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_set_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
-#call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.indexed.sort.txt' + ' ' + output_file_chip_index_set+'.indexed.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.index_set.sort.txt' + ' ' + output_file_chip_index_set+'.index_set.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_set_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_chip_index_set+'.indexed.sort.txt' + ' ' + output_file_chip_index_set+'.indexed.sort.txt' + '.png ' + mark_list_chip + ' ' + str(chip_index_matrix_start_col) + ' ' + chip_high_color + ' ' + chip_low_color + ' ' + chip_log2_transform + ' ' + str(chip_log2_transform_add_smallnum), shell=True)
 
 #######################
 #######################
