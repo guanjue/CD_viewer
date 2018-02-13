@@ -49,10 +49,11 @@ for (k in c(1:length(index_set_id_uniq))){
 	}
 	### save figure
 	colnames(signal_table_df) = c('celltype', 'signal')
-	#png(paste(toString(k), '.', toString(index_set_id_uniq[k]), '.', outfile, sep=''))#, dim(signal_matrix)[2]+5, dim(signal_matrix)[2]+5)
+	### keep the x-axis order
+	signal_table_df$celltype = factor(signal_table_df$celltype, levels=unique(signal_table_df$celltype))
 	p = ggplot(signal_table_df, aes(factor(celltype), signal), )
-	p + geom_violin(scale = 'width', aes(fill = 'red')) + scale_x_discrete(labels=colname) + theme(legend.position="none", axis.text.x = element_text(angle=270)) + stat_summary(fun.y=mean, geom='point', shape=23, size=4)
+	p + geom_violin(scale = 'width', aes(fill = 'red')) + scale_x_discrete(labels=colname) +  stat_summary(fun.y=mean, geom='point', shape=23, size=4)
 	ggsave(paste(toString(k-1), '.', toString(index_set_id_uniq[k]), '.', outfile, sep=''), width = dim(signal_matrix)[2]+10, height = dim(signal_matrix)[2])
 }
 
-
+#time Rscript ~/group/software/CD_viewer/bin/plot_ct_indexset_violin.R atac_20cell.bed.signal.matrix.txt.indexed.sort.txt signal_list.txt violin.pdf
