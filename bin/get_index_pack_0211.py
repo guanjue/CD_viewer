@@ -151,9 +151,9 @@ def get_mark_matrix(peak_bed, peak_bed_colnum, mark_list, output_file, signal_co
 			### used bedtools map to get the average signal of each peak
 			call('bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
 			### convert bedtools window output to matrix of pk and intersect ideas label info (intersect region; midpoint dist; TF peak length)
-			data_info_matrix = ideas_label_info(mark_bed_file+'.tmp01.txt', 4, 8, 2, 6)
+			data_info_matrix = ideas_label_info(mark_bed_file+'.tmp01.txt', 4, 9, 2, 6)
 			### get peak's ideas labels based on intersect region; midpoint dist; TF peak length
-			get_cRE_ideas_state(data_info_matrix, 1, 2, 3, 4, 5, sort_bed_file, 5, mark_bed_file+'.tmp01.txt')
+			get_cRE_ideas_state(data_info_matrix, 1, 2, 3, 4, 5, sort_bed_file, 4, mark_bed_file+'.tmp01.txt')
 		### cut the map number column
 		call('cut -f'+ str(peak_bed_colnum+1) +" -d$'\t' " + mark_bed_file+'.tmp01.txt' + ' > ' + mark_bed_file+'.tmp02.txt', shell=True)
 		### cbind to matrix
@@ -831,7 +831,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get binary matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 ### get signal matrix
 #peak_bed = 'atac.180124.bed'
@@ -842,7 +842,7 @@ signal_col = 5
 method = 'map'
 sort_sigbed = 'F'
 print('get signal matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 
 ### get ideas label matrix
@@ -863,7 +863,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get chip matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
 
 
 ### Multi-variable norm p-value (QDA)
