@@ -136,7 +136,7 @@ for (i in seq(1,dim(signal_matrix_color)[1])){
 	V(tree.igraph)$color = value_col[match_id]
 	V(tree.igraph)$size = 25
 
-	png(paste(signal_input_list, index_set_name[i], '.tree.sh.png', sep = ''), width = 1200, height = 1200)
+	png(paste(toString(i), '.', signal_input_list, index_set_name[i], '.tree.sh.png', sep = ''), width = 1200, height = 1200)
 	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
