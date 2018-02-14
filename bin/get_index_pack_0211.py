@@ -1118,7 +1118,7 @@ call('time Rscript ' + bins_folder + 'plot_tree.R ' + output_file_signal_index_s
 call('mv *tree.png signal_tree/', shell=True)
 
 call('if [ ! -d violin ]; then mkdir violin; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
 call('mv *violin.pdf violin/', shell=True)
 
 #time Rscript /Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/plot_pheatmap.R homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt.png signal_list.txt 3 red white F 0.001 
@@ -1166,7 +1166,7 @@ call('mv *tree.sh.png ideas_tree/', shell=True)
 
 print('plot barplot...')
 call('if [ ! -d bar ]; then mkdir bar; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
 call('mv *bar.pdf bar/', shell=True)
 
 
