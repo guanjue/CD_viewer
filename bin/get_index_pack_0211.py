@@ -808,7 +808,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get binary matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 ### get signal matrix
 peak_bed_colnum = 4
@@ -818,7 +818,7 @@ signal_col = 5
 method = 'map'
 sort_sigbed = 'F'
 print('get signal matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 
 ### get ideas label matrix
@@ -829,7 +829,7 @@ signal_col = 'N/A'
 method = 'window'
 sort_sigbed = 'F'
 print('get ideas matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
 
 ### get TF ChIP-seq matrix
 peak_bed_colnum = 4
@@ -839,7 +839,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get chip matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
 
 
 ### Multi-variable norm p-value (QDA)
@@ -967,8 +967,8 @@ call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_i
 
 ### plot tree
 call('if [ ! -d ideas_tree_index_set ]; then mkdir ideas_tree_index_set; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_tree_multi_color.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
-call('time Rscript ' + bins_folder + 'plot_tree_multi_color_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_tree_multi_color.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_tree_multi_color_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 call('mv *tree.png ideas_tree_index_set/', shell=True)
 call('mv *tree.sh.png ideas_tree_index_set/', shell=True)
 
