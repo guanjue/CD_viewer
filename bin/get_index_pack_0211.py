@@ -839,7 +839,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get chip matrix...')
-#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
 
 
 ### Multi-variable norm p-value (QDA)
@@ -974,7 +974,7 @@ call('mv *tree.sh.png ideas_tree_index_set/', shell=True)
 
 print('plot barplot...')
 call('if [ ! -d bar_index_set ]; then mkdir bar_index_set; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
 call('mv *bar.pdf bar_index_set/', shell=True)
 
 
@@ -995,7 +995,7 @@ call('time Rscript ' + bins_folder + 'plot_tree.R ' + output_file_signal_index_s
 call('mv *tree.png signal_tree_index_set/', shell=True)
 
 call('if [ ! -d violin_index_set ]; then mkdir violin_index_set; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
 call('mv *violin.pdf violin_index_set/', shell=True)
 
 
