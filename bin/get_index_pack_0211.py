@@ -965,6 +965,19 @@ print('use rect to plot ideas heatmap...with Shannon Entropy')
 call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_enrich+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_enrich+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 call('time Rscript ' + bins_folder + 'plot_rect_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_freq+'.sh.index_set.sort.txt' + '.png ' + mark_list_ideas+ ' ' + str(ideas_range_color_file) + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + ideas_index_set_boarder_color + ' ' + ideas_log2_transform + ' ' + str(ideas_log2_transform_add_smallnum), shell=True)
 
+### plot tree
+call('if [ ! -d ideas_tree_index_set ]; then mkdir ideas_tree_index_set; fi', shell=True)
+call('time Rscript ' + bins_folder + 'plot_tree_multi_color.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('time Rscript ' + bins_folder + 'plot_tree_multi_color_filter.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + output_file_ideas_index_set_sh+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + 'ideas_range_color.txt' + ' ' + mark_list_ideas + ' ' + str(ideas_index_set_matrix_start_col) + ' ' + str(ideas_sh_index_set_matrix_start_col) + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('mv *tree.png ideas_tree_index_set/', shell=True)
+call('mv *tree.sh.png ideas_tree_index_set/', shell=True)
+
+print('plot barplot...')
+call('if [ ! -d bar_index_set ]; then mkdir bar_index_set; fi', shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
+call('mv *bar.pdf bar_index_set/', shell=True)
+
+
 signal_high_color = 'red'
 signal_low_color = 'white'
 signal_log2_transform = 'F'
@@ -976,6 +989,14 @@ print('use pheatmap to plot signal index & index set heatmap...')
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + output_file_signal_index_set+'.index_set.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 call('time Rscript ' + bins_folder + 'plot_pheatmap.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + output_file_signal_index_set+'.indexed.sort.txt' + '.png ' + mark_list_signal + ' ' + str(signal_index_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
 
+### plot tree
+call('if [ ! -d signal_tree_index_set ]; then mkdir signal_tree_index_set; fi', shell=True)
+call('time Rscript ' + bins_folder + 'plot_tree.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + 'cd_tree.txt' + ' ' + mark_list_signal + ' ' + str(signal_index_set_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + signal_log2_transform + ' ' + str(signal_log2_transform_add_smallnum), shell=True)
+call('mv *tree.png signal_tree_index_set/', shell=True)
+
+call('if [ ! -d violin_index_set ]; then mkdir violin_index_set; fi', shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
+call('mv *violin.pdf violin_index_set/', shell=True)
 
 
 index_high_color = 'black'
