@@ -749,6 +749,28 @@ def index_set_score(index_name_vec, index_p_vec, sth_matrix_file, sth_start_col,
 		### write output
 		write2d_array(index_sth_matrix_ni_ordered, output_filename+'.indexed.sort.txt')
 
+	### sort & save count vector
+	if preorder == 'T':
+		### convert new index matrix to index_set_signal_dict
+		index_set_index_label_dict = {}
+		for info in index_sth_matrix_ni_ordered:
+			label_name_tmp = info[0]
+			if not (label_name_tmp in index_set_index_label_dict):
+				index_set_index_label_dict[label_name_tmp] = [ info[2:] ]
+			else:
+				index_set_index_label_dict[label_name_tmp].append( info[2:] )
+		### plot violinplot
+		for index_set_label_name in index_set_index_label_dict:
+			signal_matrix = np.array(index_set_index_label_dict[index_set_label_name], dtype=float)
+			### plotting				
+			pos = range(1,signal_matrix.shape[1]+1)
+			print('plot violinplot of index:' + index_set_label_name)
+			print(signal_matrix.shape)
+			matrix_log = signal_matrix#np.log2(signal_matrix+0.1)
+			matrix_list = [matrix_log[:,i] for i in range(0,signal_matrix.shape[1])]
+			#plt.figure()
+			#plt.violinplot(matrix_list, pos, points=20, widths=0.5, showmeans=True, showextrema=False, showmedians=False)
+			#plt.savefig(output_filename + '.violin.' + index_set_label_name + '.png')
 
 	elif not preorder =='F':
 		### read index order
@@ -808,7 +830,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get binary matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
 
 ### get signal matrix
 peak_bed_colnum = 4
@@ -818,7 +840,7 @@ signal_col = 5
 method = 'map'
 sort_sigbed = 'F'
 print('get signal matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_signal, output_file_signal, signal_col, method, sort_sigbed)
 
 
 ### get ideas label matrix
@@ -829,7 +851,7 @@ signal_col = 'N/A'
 method = 'window'
 sort_sigbed = 'F'
 print('get ideas matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
 
 ### get TF ChIP-seq matrix
 peak_bed_colnum = 4
@@ -839,7 +861,7 @@ signal_col = 'N/A'
 method = 'intersect'
 sort_sigbed = 'T'
 print('get chip matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_chip, output_file_chip, signal_col, method, sort_sigbed)
 
 
 ### Multi-variable norm p-value (QDA)
@@ -1118,7 +1140,7 @@ call('time Rscript ' + bins_folder + 'plot_tree.R ' + output_file_signal_index_s
 call('mv *tree.png signal_tree/', shell=True)
 
 call('if [ ! -d violin ]; then mkdir violin; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.index_set.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_indexset_violin.R ' + output_file_signal_index_set+'.indexed.sort.txt' + ' ' + mark_list_signal + ' ' + 'violin.pdf' , shell=True)
 call('mv *violin.pdf violin/', shell=True)
 
 #time Rscript /Volumes/MAC_Data/data/labs/zhang_lab/01projects/CD_viewer/bin/plot_pheatmap.R homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt homerTable3.peaks.filtered.interval.bed.signal.matrix.txt.index.sort.txt.png signal_list.txt 3 red white F 0.001 
@@ -1166,7 +1188,7 @@ call('mv *tree.sh.png ideas_tree/', shell=True)
 
 print('plot barplot...')
 call('if [ ! -d bar ]; then mkdir bar; fi', shell=True)
-call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.index_set.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
+call('time Rscript ' + bins_folder + 'plot_ct_IDEASpro_bar.R ' + output_file_ideas_index_set_freq+'.indexed.sort.txt' + ' ' + mark_list_ideas + ' ' + 'ideas_range_color.txt' + ' ' + 'bar.pdf' , shell=True)
 call('mv *bar.pdf bar/', shell=True)
 
 
