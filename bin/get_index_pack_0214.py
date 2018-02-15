@@ -397,15 +397,14 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 				
 			### calculate log scale score (for entire signal_matrix)
 			p1 = 1 / ( ((2 * np.pi)**(k/2)) * ((np.abs(cov_i_determinant))**0.5) )
-			#p2 = np.exp( -0.5 * np.sum(np.dot((signal_matrix-mean_i), cov_i_inverse)*(signal_matrix-mean_i), axis = 1) )
-			p2_vec = []
-			for i in range(0, signal_matrix.shape[0]):
-				mc1 = np.dot((signal_matrix[0,:]-mean_i), cov_i_inverse)
-				mc2 = np.dot(mc1, (signal_matrix[0,:]-mean_i))
-				p2 = np.exp( -0.5 * mc2 )
-				#print(p2)
-				p2_vec.append(p2)
-			p2 = np.array(p2_vec)
+			mc1 = np.dot((signal_matrix[0,:]-mean_i), cov_i_inverse)
+			mc2 = np.dot(mc1, (signal_matrix[0,:]-mean_i))
+			p2 = np.exp( -0.5 * mc2 )
+			print(p2)
+			print(p2.shape)
+			p2 = np.exp( -0.5 * np.sum(np.dot((signal_matrix-mean_i), cov_i_inverse)*(signal_matrix-mean_i), axis = 1) )
+			print(p2)
+			print(p2.shape)
 			score_i = p1*p2
 			#d = np.sum(- 0.5 * np.log( abs(cov_i) ))
 			#score_i = d - 0.5 * np.sum( np.dot((signal_matrix-mean_i), cov_i_inverse) * (signal_matrix-mean_i), axis = 1 )
