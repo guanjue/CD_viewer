@@ -399,7 +399,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 			p1 = 1 / ( ((2 * np.pi)**(k/2)) * ((np.abs(cov_i_determinant))**0.5) )
 			#p2 = np.exp( -0.5 * np.sum(np.dot((signal_matrix-mean_i), cov_i_inverse)*(signal_matrix-mean_i), axis = 1) )
 			mc1 = np.dot((signal_matrix-mean_i), cov_i_inverse)
-			mc2 = np.dot(mc1, (signal_matrix-mean_i))
+			mc2 = np.dot(mc1, np.transpose(signal_matrix-mean_i))
 			p2 = np.exp( -0.5 * np.sum(mc2, axis = 1) )
 			print(p2.shape)
 			score_i = p1*p2
