@@ -401,6 +401,7 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 			mc1 = np.dot((signal_matrix[0,:]-mean_i), cov_i_inverse)
 			mc2 = np.dot(mc1, (signal_matrix[0,:]-mean_i))
 			p2 = np.exp( -0.5 * mc2 )
+			print(p2)
 			print(p2.shape)
 			score_i = p1*p2
 			#d = np.sum(- 0.5 * np.log( abs(cov_i) ))
