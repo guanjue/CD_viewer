@@ -398,8 +398,8 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 			### calculate log scale score (for entire signal_matrix)
 			p1 = 1 / ( ((2 * np.pi)**(k/2)) * ((np.abs(cov_i_determinant))**0.5) )
 			#p2 = np.exp( -0.5 * np.sum(np.dot((signal_matrix-mean_i), cov_i_inverse)*(signal_matrix-mean_i), axis = 1) )
-			mc1 = np.dot(np.transpose(signal_matrix-mean_i), cov_i_inverse)
-			mc2 = np.dot(mc1, (signal_matrix-mean_i))
+			mc1 = np.dot((signal_matrix[0,:]-mean_i), cov_i_inverse)
+			mc2 = np.dot(mc1, (signal_matrix[0,:]-mean_i))
 			p2 = np.exp( -0.5 * mc2 )
 			print(p2.shape)
 			score_i = p1*p2
@@ -412,9 +412,10 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 
 		print('check p-value...')
 		print(score_i_exp_matrix[0:100,:])
-		print(np.max(score_i_exp_matrix,axis=0)[0:100])
 		print(np.sum(np.max(score_i_exp_matrix,axis=0)>=0.5))
 		print(np.sum(np.max(score_i_exp_matrix,axis=0)>=0.05))
+
+		print(np.max(score_i_exp_matrix,axis=0)[0:100])
 		print('calculating Quadratic Scores...DONE')
 		print('calculating max p and index...') 
 		index_name_vec = []
