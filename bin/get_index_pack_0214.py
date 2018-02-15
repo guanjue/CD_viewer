@@ -409,6 +409,8 @@ def mvn_density_score(signal_matrix_od, signal_matrix_start_col, log_signal, sma
 		print('check p-value...')
 		print(score_i_exp_matrix[0:100,:])
 		print(np.max(score_i_exp_matrix,axis=0)[0:100])
+		print(np.sum(np.max(score_i_exp_matrix,axis=0)>=0.5))
+		print(np.sum(np.max(score_i_exp_matrix,axis=0)>=0.05))
 		print('calculating Quadratic Scores...DONE')
 		print('calculating max p and index...') 
 		index_name_vec = []
