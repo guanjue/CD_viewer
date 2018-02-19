@@ -72,8 +72,10 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			path = unlist(all_simple_paths(tree.igraph, s, t))
 			print(path)
 			path_names = names(path)
+			print(path_names)
 			### sort colnames by tree nodes id
 			match_id = match(tree_names, colname)
+			print(match_id)
 			path_signal = signal_matrix[i,][match_id]
 			print(path_signal)
 			path_sig_cor = cor(path_signal, range(1,length(path)), method = 'spearman')
