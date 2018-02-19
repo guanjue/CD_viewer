@@ -81,7 +81,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			path_signal = path_signal[!is.na(path_signal)]
 			print(path_signal)
 			if (length(path_signal)>1){
-				path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'spearman')
+				path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'pearson')
 				path_sig_cor_vector[j] = path_sig_cor
 				path_lw_cor = path_lw_cor + length(path_signal) * abs(path_sig_cor)
 				print(path_sig_cor)
@@ -98,7 +98,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	print(path_lw_cor)
 
 	### plot tree
-	png(paste(toString(path_lw_cor), '.', toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
+	png(paste(toString(int(path_lw_cor)), '.', toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
 	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
