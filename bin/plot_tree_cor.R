@@ -68,7 +68,6 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	j=1
 	for (s in all_source_node){
 		for (t in all_target_node){
-			j = j+1
 			path = unlist(all_simple_paths(tree.igraph, s, t))
 			print(path)
 			path_names = names(path)
