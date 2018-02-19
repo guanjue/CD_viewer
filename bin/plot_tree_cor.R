@@ -73,6 +73,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			print(path)
 			path_names = names(path)
 			print(path_names)
+			print(colname)
 			### sort colnames by tree nodes id
 			match_id = match(path_names, colname)
 			print(match_id)
