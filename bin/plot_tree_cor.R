@@ -65,7 +65,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 
 	### correlation score
 	path_sig_cor_vector = c()
-	j=0
+	j=1
 	for (s in all_source_node){
 		for (t in all_target_node){
 			j = j+1
@@ -80,9 +80,12 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			path_signal = signal_matrix[i,][match_id]
 			path_signal = path_signal[!is.na(path_signal)]
 			print(path_signal)
-			path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'spearman')
-			path_sig_cor_vector[j] = path_sig_cor
-			print(path_sig_cor)
+			if (length(path_signal)>2){
+				path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'spearman')
+				path_sig_cor_vector[j] = path_sig_cor
+				print(path_sig_cor)
+				j = j+1		
+			}
 		}
 	}
 	print(path_sig_cor_vector)
