@@ -82,7 +82,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			print(path_signal)
 			if (length(path_signal)>2){
 				path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'pearson')
-				path_sig_cor_vector[j] = path_sig_cor
+				path_sig_cor_vector[j] = length(path_signal) * path_sig_cor
 				path_lw_cor = path_lw_cor + length(path_signal) * abs(path_sig_cor)
 				print(path_sig_cor)
 				j = j+1		
