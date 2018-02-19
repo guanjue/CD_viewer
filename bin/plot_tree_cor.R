@@ -78,7 +78,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			match_id = match(path_names, colname)
 			print(match_id)
 			path_signal = signal_matrix[i,][match_id]
-			path_signal = path_signal[!is.na()]
+			path_signal = path_signal[!is.na(path_signal)]
 			print(path_signal)
 			path_sig_cor = cor(path_signal, range(1,length(path_signal)), method = 'spearman')
 			path_sig_cor_vector[i] = path_sig_cor
