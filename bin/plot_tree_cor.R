@@ -98,7 +98,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	print(path_lw_cor)
 
 	### plot tree
-	png(paste(toString(as.integer(max_cor)), '.', toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
+	png(paste(toString(as.integer(max_cor*10)), '.', toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
 	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
