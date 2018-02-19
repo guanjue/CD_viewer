@@ -85,6 +85,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			print(path_sig_cor)
 		}
 	}
+	print(path_sig_cor_vector)
 	max_cor = max(abs(path_sig_cor_vector))
 	print('max path correlation')
 	print(max_cor)
