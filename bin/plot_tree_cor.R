@@ -82,6 +82,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			print(path_signal)
 			path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'spearman')
 			path_sig_cor_vector[i] = path_sig_cor
+			print(path_sig_cor)
 		}
 	}
 	max_cor = max(abs(path_sig_cor_vector))
