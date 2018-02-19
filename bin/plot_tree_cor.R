@@ -66,6 +66,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	### correlation score
 	path_sig_cor_vector = c()
 	path_lw_cor = 0
+	dff_sum_all = 0
 	j=1
 	for (s in all_source_node){
 		for (t in all_target_node){
@@ -81,6 +82,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			path_signal = path_signal[!is.na(path_signal)]
 			print(path_signal)
 			if (length(path_signal)>2){
+				dff_sum_all = dff_sum_all + diff(path_signal)
 				path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'pearson')
 				path_sig_cor_vector[j] = length(path_signal) * path_sig_cor
 				path_lw_cor = path_lw_cor + length(path_signal) * abs(path_sig_cor)
@@ -97,8 +99,11 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	print('length weighted path correlation')
 	print(path_lw_cor)
 
+	print('diff sum')
+	print(dff_sum_all)
+
 	### plot tree
-	png(paste(toString(as.integer(max_cor*10)), '.', toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
+	png(paste(toString(as.integer(dff_sum_all*1000)), '.', toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
 	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
