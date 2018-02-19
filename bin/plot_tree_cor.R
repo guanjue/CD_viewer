@@ -80,7 +80,7 @@ for (i in seq(1,dim(signal_matrix)[1])){
 			path_signal = signal_matrix[i,][match_id]
 			path_signal = path_signal[!is.na(path_signal)]
 			print(path_signal)
-			if (length(path_signal)>1){
+			if (length(path_signal)>2){
 				path_sig_cor = cor(path_signal, seq(1,length(path_signal)), method = 'pearson')
 				path_sig_cor_vector[j] = path_sig_cor
 				path_lw_cor = path_lw_cor + length(path_signal) * abs(path_sig_cor)
