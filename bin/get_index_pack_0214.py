@@ -853,7 +853,7 @@ signal_col = 'N/A'
 method = 'window'
 sort_sigbed = 'F'
 print('get ideas matrix...')
-get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
+#get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_ideas, output_file_ideas, signal_col, method, sort_sigbed)
 
 ### get TF ChIP-seq matrix
 peak_bed_colnum = 4
