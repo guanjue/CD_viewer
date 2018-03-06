@@ -833,7 +833,7 @@ method = 'intersect'
 sort_sigbed = 'T'
 print('get binary matrix...')
 #get_mark_matrix(peak_bed, peak_bed_colnum, mark_list_index, output_file_index, signal_col, method, sort_sigbed)
-
+#'atac_20cell.bed.index.matrix.txt'
 ### get signal matrix
 peak_bed_colnum = 4
 mark_list_signal = 'signal_list.txt'
