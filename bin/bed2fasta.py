@@ -33,8 +33,8 @@ def bed2fasta(input_bed_file, sequence_col, outputname):
 	for b,s in zip(bed, seq):
 		name = '>'+b[0]+':'+b[1]+'-'+b[2]
 		fasta_seq = s.replace(',','')
-		fasta_array.append(name)
-		fasta_array.append(fasta_seq)
+		fasta_array.append([name])
+		fasta_array.append([fasta_seq])
 
 	write2d_array(fasta_array, outputname)
 
