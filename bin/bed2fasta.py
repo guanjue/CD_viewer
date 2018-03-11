@@ -28,7 +28,7 @@ def write2d_array(array,output):
 def bed2fasta(input_bed_file, sequence_col, outputname):
 	data = read2d_array(input_bed_file, str, '\t')
 	seq = data[:,sequence_col-1]
-	bed = data[0:3,:]
+	bed = data[:,0:3]
 	fasta_array = []
 	for b,s in zip(bed, seq):
 		name = '>'+b[0]+':'+b[1]+'-'+b[2]
