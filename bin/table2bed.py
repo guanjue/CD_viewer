@@ -56,6 +56,7 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign):
 		elif binary_matrix.shape[0] > 1:
 			binary_matrix_used = binary_matrix_rowsum >= 2
 		### merge bed and binary label
+		print(np.sum(binary_matrix_used))
 		print(bed.shape)
 		print(np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1)).shape)
 		bed_tmp_all = np.concatenate((bed, np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1))), axis=1)
