@@ -62,6 +62,8 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign):
 		bed_tmp_all = np.concatenate((bed, np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1))), axis=1)
 		### only keep pk
 		bed_tmp_ct = bed_tmp_all[binary_matrix_used,:]
+		print('bed_tmp_ct.shape:')
+		print(bed_tmp_ct.shape)
 		### add to dict
 		ct_binary_dict[ct] = bed_tmp_ct
 
