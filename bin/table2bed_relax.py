@@ -48,10 +48,7 @@ def table2bed(input_table_file, bedcol, binary_col_st, binary_col_ed, sep_sign):
 		binary_matrix = np.array(ct_dict[ct], dtype='float')
 		binary_matrix_rowsum = np.sum(binary_matrix, axis=0)
 		### get pk in the ct
-		if binary_matrix.shape == 1:
-			binary_matrix_used = binary_matrix_rowsum != 0
-		elif binary_matrix.shape > 1:
-			binary_matrix_used = binary_matrix_rowsum >= 2
+		binary_matrix_used = binary_matrix_rowsum != 0
 		### merge bed and binary label
 		print(bed.shape)
 		print(np.reshape(binary_matrix_rowsum, (binary_matrix_rowsum.shape[0],1)).shape)
